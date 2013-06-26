@@ -1,13 +1,37 @@
-# Compiled Object files
-*.slo
-*.lo
+# Visual Studio
+*.[Oo]bj
+*.user*
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.vcxproj.filters
+ipch/
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+ 
+# GCC/Clang
 *.o
-
-# Compiled Dynamic libraries
 *.so
+*.a
+*.dll.a
 *.dylib
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+# Qt Creator
+.pro.user*
