@@ -40,7 +40,7 @@ architecton itself can be built by running one of the following commands:
     g++ -std=c++11 -O2 -I"architecton" *.cpp -o architecton
     clang++ -std=c++11 -O2 -I"architecton" *.cpp -o architecton
 
-Once architecton can build itself, you can run
+Once architecton can build itself, you will be able to run
 
     architekton
 
