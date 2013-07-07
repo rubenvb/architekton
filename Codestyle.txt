@@ -1,0 +1,47 @@
+Architekton Codestyle guide
+---------------------------
+
+For those wanting to contribute, here are the codestyle guidelines used in
+architekton source code:
+
+ - 80 chars per line: not for old monitors, but for portability and diff views.
+ - snake_case
+ - defining example:
+
+class bla
+{
+  int i;
+  char c;
+  int j;
+public:
+  bla(int i,
+      char c);
+};
+bla::bla(int i,
+         char c)
+: i(i),
+  c(c)
+  j()
+{
+  if(c < i)
+    j = c+i;
+  else if(i<j)
+  {
+    int random 43;
+    j = random*random;
+  }
+  else
+  {
+    int random = 42;
+    c = random*i;
+  }
+}
+ - indentation:
+ - C++11
+ - Each header includes architekton/global.h++
+ - include order: global, architekton, platform, C++
+ - using <namespace>::<classname> below each include defining the type
+ - avoid getters/setters.
+ - typedef long typenames in architekton/types.h++
+ - use uchar/ustring/etc... to guarantee maximum portability and speed.
+
