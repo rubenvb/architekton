@@ -30,7 +30,7 @@ THE SOFTWARE.
 #ifndef ARCHITEKTON_GLOBAL_H
 #define ARCHITEKTON_GLOBAL_H
 
-#include <cinttypes>
+#include <cstdint>
 
 namespace architekton
 {

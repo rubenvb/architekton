@@ -32,6 +32,7 @@ THE SOFTWARE.
 
 #include "architekton/utility/commandline.h++"
 #include "architekton/utility/debug.h++"
+#include "architekton/utility/file.h++"
 #include "architekton/utility/make_unique.h++"
 #include "architekton/utility/print.h++"
 

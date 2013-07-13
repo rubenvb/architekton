@@ -23,47 +23,33 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - main.c++
- * main function and execution timing.
+ * architekton - file.h++
+ * File/directory abstraction and helper functions.
  **/
 
-#include "architekton/utility.h++"
+#ifndef ARCHITEKTON_FILE_H
+#define ARCHITEKTON_FILE_H
 
-#include <chrono>
+#include "architekton/global.h++"
+#include "architekton/types.h++"
 
-using namespace architekton;
-using namespace architekton::utility;
-using namespace std;
-using namespace std::chrono;
-
-int main(int argc, char* argv[])
+namespace architekton
 {
-  const auto begin = high_resolution_clock::now();
+namespace utility
+{
 
-  try
-  {
-    print("Architekton version ", version::major, ".", version::minor, " is building your software. Please stand by...\n");
+bool directory_exists(const ustring& name);
 
-    debug_print(debug::always, "Step 1: Commandline arguments.\n");
-    options options;
-    parse_commandline(argc, argv, options);
+bool file_exists(const ustring& name);
 
-    if(directory_exists(L"debug"))
-      print("Yay\n");
-    if(file_exists(L"Makefile"))
-      print("Yahoo\n");
+class file
+{
+public:
+  file(const ustring& filename);
+};
 
-  }
-  catch(const std::exception& e)
-  {
-    print("A std::exception was thrown: ", e.what());
-  }
-  catch(...)
-  {
-    print("Something bad happened.");
-  }
+} // namespace utility
 
-  auto time = high_resolution_clock::now() - begin;
-  print("\nTotal architekton execution time was: ",
-        duration<double, milli>(time).count(), " milliseconds.\n");
-}
+} // namespace architekton
+
+#endif // ARCHITEKTON_FILE_H

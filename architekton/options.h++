@@ -23,47 +23,57 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - main.c++
- * main function and execution timing.
+ * architekton - options.h++
+ * Struct containing all options that can influence the build process.
  **/
 
-#include "architekton/utility.h++"
+#ifndef ARCHITEKTON_OPTIONS_H
+#define ARCHITEKTON_OPTIONS_H
 
-#include <chrono>
+#include "architekton/global.h++"
+#include "architekton/types.h++"
 
-using namespace architekton;
-using namespace architekton::utility;
-using namespace std;
-using namespace std::chrono;
+#include <string>
 
-int main(int argc, char* argv[])
+namespace architekton
 {
-  const auto begin = high_resolution_clock::now();
 
-  try
-  {
-    print("Architekton version ", version::major, ".", version::minor, " is building your software. Please stand by...\n");
+enum class architecture
+{
+  x86,
+  AMD64,
+  ARM,
+  ARM64
+};
 
-    debug_print(debug::always, "Step 1: Commandline arguments.\n");
-    options options;
-    parse_commandline(argc, argv, options);
+enum class os
+{
+  Windows,
+  MacOSX,
+  Linux
+};
 
-    if(directory_exists(L"debug"))
-      print("Yay\n");
-    if(file_exists(L"Makefile"))
-      print("Yahoo\n");
+enum class toolchain
+{
+  GNU,
+  LLVM,
+  Microsoft,
+  Intel
+};
 
-  }
-  catch(const std::exception& e)
-  {
-    print("A std::exception was thrown: ", e.what());
-  }
-  catch(...)
-  {
-    print("Something bad happened.");
-  }
+struct options
+{
+  ustring_set targets_to_build;
 
-  auto time = high_resolution_clock::now() - begin;
-  print("\nTotal architekton execution time was: ",
-        duration<double, milli>(time).count(), " milliseconds.\n");
-}
+  architecture build_architecture;
+  os build_os;
+  toolchain build_toolchain;
+
+  architecture target_architecture;
+  os target_os;
+  toolchain target_toolchain;
+};
+
+} // namespace architekton
+
+#endif // ARCHITEKTON_OPTIONS_H

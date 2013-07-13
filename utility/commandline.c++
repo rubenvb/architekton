@@ -27,9 +27,11 @@ THE SOFTWARE.
  * Function implementations.
  **/
 
-#include "architekton/utility/debug.h++"
 #include "architekton/utility/commandline.h++"
+#include "architekton/utility/debug.h++"
 #include "architekton/utility/string.h++"
+
+#include "architekton/options.h++"
 
 namespace architekton
 {
@@ -37,14 +39,18 @@ namespace utility
 {
 
 #ifdef _WIN32
-void parse_commandline(int, char*[])
+void parse_commandline(int,
+                       char*[],
+                       options& options)
 {
   int argc;
   auto argv = CommandLineToArgvW(GetCommandLineW(), &argc);
   if(argv == nullptr)
     throw std::runtime_error("Call to CommandLineToArgvW failed.");
 #else
-void parse_commandline(int argc, char* argv[])
+void parse_commandline(int argc,
+                       char* argv[],
+                       options& options)
 {
 #endif
   std::vector<ustring> args(argv, argv+argc);
@@ -71,10 +77,14 @@ void parse_commandline(int argc, char* argv[])
       debug_print(debug::commandline, "Dashless argument: \'", arg, "\'\n");
       if(first_dashless_argument)
       {
+        debug_print(debug::commandline, "Possible project file or directory: \'", arg, "\'.");
 
 
       }
       debug_print(debug::commandline, "Target to build: \'", arg, "\'\n");
+      if(!options.targets_to_build.insert(arg).second)
+        print("Commandline warning: target \'", arg, "\' specified twice on the commandline.");
+
 
     }
 

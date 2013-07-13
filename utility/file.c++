@@ -23,47 +23,59 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - main.c++
- * main function and execution timing.
+ * architekton - file.c++
+ * Class and function implementation.
  **/
 
-#include "architekton/utility.h++"
+#include "architekton/utility/file.h++"
 
-#include <chrono>
+#ifdef _WIN32
+#ifndef WIN32_MEAN_AND_LEAN
+#define WIN32_MEAN_AND_LEAN
+#endif
+#include <windows.h>
+#undef WIN32_MEAN_AND_LEAN
+#endif
 
-using namespace architekton;
-using namespace architekton::utility;
-using namespace std;
-using namespace std::chrono;
-
-int main(int argc, char* argv[])
+namespace architekton
 {
-  const auto begin = high_resolution_clock::now();
+namespace utility
+{
 
-  try
-  {
-    print("Architekton version ", version::major, ".", version::minor, " is building your software. Please stand by...\n");
-
-    debug_print(debug::always, "Step 1: Commandline arguments.\n");
-    options options;
-    parse_commandline(argc, argv, options);
-
-    if(directory_exists(L"debug"))
-      print("Yay\n");
-    if(file_exists(L"Makefile"))
-      print("Yahoo\n");
-
-  }
-  catch(const std::exception& e)
-  {
-    print("A std::exception was thrown: ", e.what());
-  }
-  catch(...)
-  {
-    print("Something bad happened.");
-  }
-
-  auto time = high_resolution_clock::now() - begin;
-  print("\nTotal architekton execution time was: ",
-        duration<double, milli>(time).count(), " milliseconds.\n");
+bool directory_exists(const ustring& name)
+{
+#ifdef _WIN32
+  DWORD attributes = GetFileAttributesW(name.c_str());
+  return (attributes != INVALID_FILE_ATTRIBUTES
+          && (attributes & FILE_ATTRIBUTE_DIRECTORY));
+#else
+  stat info;
+  if(stat(name.c_str(), &info) == 0)
+    return false;
+  else
+    return S_ISDIR(info.st_mode);
+#endif
 }
+
+bool file_exists(const ustring& name)
+{
+#ifdef _WIN32
+  DWORD attributes = GetFileAttributesW(name.c_str());
+  return (attributes != INVALID_FILE_ATTRIBUTES
+          && !(attributes & FILE_ATTRIBUTE_DIRECTORY));
+#else
+  stat info;
+  if(stat(name.c_str(), &info) == 0)
+    return false;
+  else
+    return S_ISREG(info.st_mode);
+#endif
+}
+
+file::file(const ustring& /*filename*/)
+{}
+
+} // namespace utility
+
+} // namespace architekton
+

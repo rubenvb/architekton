@@ -31,6 +31,7 @@ THE SOFTWARE.
 #define ARCHITEKTON_COMMANDLINE_H
 
 #include "architekton/global.h++"
+#include "architekton/options.h++"
 #include "architekton/types.h++"
 
 #ifdef _WIN32
@@ -49,7 +50,8 @@ namespace utility
 {
 
 void parse_commandline(int argc,
-                       char* argv[]);
+                       char* argv[],
+                       options& options);
 
 } // namespace utility
 

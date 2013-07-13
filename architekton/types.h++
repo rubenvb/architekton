@@ -34,6 +34,7 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -45,6 +46,7 @@ using uchar = wchar_t;
 using uostream = std::wostream;
 using ustring = std::wstring;
 using ustring_vector = std::vector<ustring>;
+using ustring_set = std::set<ustring>;
 
 extern std::wostream& ucout;
 extern std::wostream& ucerr;
@@ -53,6 +55,7 @@ using uchar = char;
 using uostream = std::ostream;
 using ustring std::string;
 using ustring_vector = std::vector<ustring>;
+using ustring_set = std::set<ustring>;
 
 extern std::ostream& ucout;
 extern std::ostream& ucerr;
