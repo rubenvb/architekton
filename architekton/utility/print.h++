@@ -43,13 +43,24 @@ THE SOFTWARE.
 
 #include <iostream>
 
+#include <typeinfo>
 
 namespace architekton
 {
 namespace utility
 {
 
-template<typename... ArgTypes>
+inline void print() {}
+
+template <typename T, typename ...ArgTypes>
+inline void print(T t, ArgTypes ...args)
+{
+  std::wcout << t;
+  if(sizeof...(args))
+    print(args...);
+}
+
+/*template<typename... ArgTypes>
 inline void print(ArgTypes... args)
 {
   // trick to expand variadic argument pack without recursion
@@ -59,8 +70,8 @@ inline void print(ArgTypes... args)
   // trick is to use the side effect of list-initializer to call a function
   //  on every argument.
   // (void) is to suppress "statement has no effect" warnings
-  (void)expand_variadic_pack{0, ((ucout << args), void(), 0)... };
-}
+  (void)expand_variadic_pack{0, ((std::wcout << args), void(), 0)... };
+}*/
 
 } // namespace utility
 

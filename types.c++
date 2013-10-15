@@ -28,8 +28,10 @@ THE SOFTWARE.
  **/
 
 #include <architekton/types.h++>
+#include <architekton/utility.h++>
 
 #include <iostream>
+  using std::wostream;
 
 namespace architekton
 {
@@ -41,7 +43,7 @@ std::ostream& ucout = std::cout;
 std::ostream& ucerr = std::cerr;
 #endif
 
-uostream& operator<<(uostream& os, const ustring_vector& list)
+wostream& operator<<(wostream& os, const string_vector& list)
 {
   if(list.empty())
     return os << "\t<empty list>";

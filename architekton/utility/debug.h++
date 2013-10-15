@@ -51,6 +51,7 @@ enum debug : std::uint32_t
   lexer = 2,
   parser = 4,
   parslexer = lexer ^ parser,
+  utility = 8,
   // ...
   always = 0xffffffff,
   everything = always
@@ -64,7 +65,26 @@ template<typename... ArgTypes>
 inline void debug_print(debug::debug level, ArgTypes... args)
 {
   if(0 != (debug::level & level))
+  {
+    switch(level)
+    {
+      case debug::commandline:
+        print("~COMMANDLINE~");
+        break;
+      case debug::lexer:
+        print("~LEXER~~~~~~~");
+        break;
+      case debug::parser:
+        print("~PARSER~~~~~~");
+        break;
+      case debug::utility:
+        print("~UTILITY~~~~~");
+        break;
+      default:
+        print("~UNKNOWN~~~~~");
+    }
     print(args...);
+  }
 }
 
 } // namespace utility

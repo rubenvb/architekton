@@ -35,9 +35,10 @@ OTHER_FILES += Codestyle.txt
 
 # mess to work with *.c++ extension
 QMAKE_EXT_CPP = .c++
-*msvc*:QMAKE_CXXFLAGS += /Tp
-*g++*:QMAKE_CXXFLAGS += -std=c++0x -pedantic
-#*win32*:LIBS += -lshell32
+*msvc*:QMAKE_CXXFLAGS += /Tp # doesn't work :(
+*g++*:QMAKE_CXXFLAGS += -std=c++11 -pedantic-errors -Wextra \#-Werror \
+                        -Winit-self -Wmissing-include-dirs \
+                        -Wstrict-aliasing
 
 CONFIG(debug, debug|release)
 {
@@ -47,11 +48,11 @@ CONFIG(debug, debug|release)
 SOURCES += \
     main.c++ \
     utility/debug.c++ \
-    error.c++ \
     types.c++ \
     utility/commandline.c++ \
     utility/string.c++ \
-    utility/file.c++
+    utility/file.c++ \
+    utility/error.c++
 
 HEADERS += \
     architekton/utility.h++ \
@@ -61,7 +62,7 @@ HEADERS += \
     architekton/utility/commandline.h++ \
     architekton/global.h++ \
     architekton/types.h++ \
-    architekton/error.h++ \
     architekton/utility/string.h++ \
     architekton/options.h++ \
-    architekton/utility/file.h++
+    architekton/utility/file.h++ \
+    architekton/utility/error.h++

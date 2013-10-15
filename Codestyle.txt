@@ -6,7 +6,14 @@ architekton source code:
 
  - 80 chars per line: not for old monitors, but for portability and diff views.
  - snake_case
- - defining example:
+ - C++11
+ - pass by value when a copy is done anyways, otherwise (const) ref.
+ - Each header includes architekton/global.h++
+ - include order: global.h++, architekton, C++, OS
+ - using <namespace>::<classname> below each include where the type is defined.
+ - no getters/setters. Use public members instead.
+ - typedef long typenames in architekton/types.h++
+ - defining example for indentation:
 
 class bla
 {
@@ -14,6 +21,7 @@ class bla
   char c;
   int j;
 public:
+  bla(int i) : i(i), c() {}
   bla(int i,
       char c);
 };
@@ -36,12 +44,3 @@ bla::bla(int i,
     c = random*i;
   }
 }
- - indentation:
- - C++11
- - Each header includes architekton/global.h++
- - include order: global, architekton, platform, C++
- - using <namespace>::<classname> below each include defining the type
- - avoid getters/setters.
- - typedef long typenames in architekton/types.h++
- - use uchar/ustring/etc... to guarantee maximum portability and speed.
-

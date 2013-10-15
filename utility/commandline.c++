@@ -29,6 +29,8 @@ THE SOFTWARE.
 
 #include "architekton/utility/commandline.h++"
 #include "architekton/utility/debug.h++"
+#include "architekton/utility/error.h++"
+#include "architekton/utility/file.h++"
 #include "architekton/utility/string.h++"
 
 #include "architekton/options.h++"
@@ -46,30 +48,28 @@ void parse_commandline(int,
   int argc;
   auto argv = CommandLineToArgvW(GetCommandLineW(), &argc);
   if(argv == nullptr)
-    throw std::runtime_error("Call to CommandLineToArgvW failed.");
+    throw error("Call to CommandLineToArgvW failed.");
 #else
 void parse_commandline(int argc,
                        char* argv[],
                        options& options)
 {
 #endif
-  std::vector<ustring> args(argv, argv+argc);
+  string_vector args(argv+1, argv+argc); // skip argv[0]
   bool first_dashless_argument = true;
   for(auto&& arg : args)
   {
-    //debug_print(debug::commandline, "Handling argument: ", arg, "\n");
     if(arg[0] == '-')
     {
       if(arg[1] == '-') // arguments should never be empty (min. length 2)
       {
-        const auto key_value = split_string(arg, 2);
+        const auto key_value = arg.split(2);
         debug_print(debug::commandline, "Project argument: key=\'", key_value.first, "\'', value=\'", key_value.second, "\'\n");
       }
       else
       {
-        const auto key_value = split_string(arg, 1);
+        const auto key_value = arg.split(1);
         debug_print(debug::commandline, "Architekton argument: key=\'", key_value.first, "\', value=\'", key_value.second, "\'\n");
-
       }
     }
     else
@@ -77,13 +77,39 @@ void parse_commandline(int argc,
       debug_print(debug::commandline, "Dashless argument: \'", arg, "\'\n");
       if(first_dashless_argument)
       {
-        debug_print(debug::commandline, "Possible project file or directory: \'", arg, "\'.");
+        if(directory_exists(arg))
+        {
+          debug_print(debug::commandline, "Possible source directory: \'", arg, "\'.\n");
+          auto project_files = find_files(arg, "*.architekton.txt");
+
+          if(project_files.empty())
+          {
+            debug_print(debug::commandline, "No project file found in \'", arg, "\', checking \'.\'.\n");
+            project_files = find_files(".", "*.architekton.txt");
+            if(project_files.empty())
+              throw error("No project file found. Please specify the path to a *.architekton.txt file to be built.");
+          }
+
+          if(project_files.size() > 1)
+            throw error("Multiple *.architekton.txt files found. Please specify the filename for the project to be built. Files found:", project_files);
+
+          // We now have exactly one project file
+          const auto&& stream_ptr(open_ifstream(*project_files.begin()));
+          auto&& stream = *stream_ptr;
+          if(!stream)
+            throw error("Unable to open *.architekton.txt file: " + project_files.begin()->name);
+        }
+        else if(file_exists(arg))
+        {
+          debug_print(debug::commandline, "Possible project file: \'", arg, "\'.\n");
+          auto project_files = find_files(arg);
+        }
 
 
       }
       debug_print(debug::commandline, "Target to build: \'", arg, "\'\n");
       if(!options.targets_to_build.insert(arg).second)
-        print("Commandline warning: target \'", arg, "\' specified twice on the commandline.");
+        print("Commandline warning: target \'", arg, "\' specified twice on the commandline.\n");
 
 
     }

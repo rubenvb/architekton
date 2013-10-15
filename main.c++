@@ -28,12 +28,12 @@ THE SOFTWARE.
  **/
 
 #include "architekton/utility.h++"
+#include "architekton/options.h++"
 
 #include <chrono>
 
 using namespace architekton;
 using namespace architekton::utility;
-using namespace std;
 using namespace std::chrono;
 
 int main(int argc, char* argv[])
@@ -44,26 +44,27 @@ int main(int argc, char* argv[])
   {
     print("Architekton version ", version::major, ".", version::minor, " is building your software. Please stand by...\n");
 
+    print("Starting build in \'", current_working_directory(), "\'.\n");
+
     debug_print(debug::always, "Step 1: Commandline arguments.\n");
     options options;
     parse_commandline(argc, argv, options);
-
-    if(directory_exists(L"debug"))
-      print("Yay\n");
-    if(file_exists(L"Makefile"))
-      print("Yahoo\n");
-
   }
+  catch(const error& e)
+  {
+    e.print();
+  }
+
   catch(const std::exception& e)
   {
     print("A std::exception was thrown: ", e.what());
   }
   catch(...)
   {
-    print("Something bad happened.");
+    print("Something bad happened.\n");
   }
 
   auto time = high_resolution_clock::now() - begin;
-  print("\nTotal architekton execution time was: ",
-        duration<double, milli>(time).count(), " milliseconds.\n");
+  print("~~~\nTotal architekton execution time was: ",
+        duration<double, std::milli>(time).count(), " milliseconds.\n");
 }

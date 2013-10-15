@@ -29,20 +29,54 @@ THE SOFTWARE.
 
 #include "architekton/utility/string.h++"
 
-#include <utility>
-  using std::pair;
-
 namespace architekton
 {
 namespace utility
 {
 
-pair<ustring, ustring> split_string(const ustring& arg,
-                                    ustring::size_type start,
-                                    uchar split)
+string string::substr(size_type pos,
+                      size_type count) const
 {
-  const auto index = arg.find(split);
-  return { arg.substr(start, index), arg.substr(index, ustring::npos)};
+  string result;
+  if(count == npos)
+    count = size();
+
+  result.reserve(count-pos+1);
+  for(size_type i = pos; pos < data.size() && pos < count; ++i)
+    result.data.push_back(data[i]);
+
+  //print(data.back(), "\n");
+  //result.data.push_back('\0');
+
+  return result;
+}
+
+std::pair<string, string> string::split(size_type start,
+                                        char_type split)
+{
+  const auto index = find(split);
+  return { substr(start, index), substr(index, string::npos)};
+}
+
+string::size_type string::find(char_type c,
+                               size_type pos) const
+{
+  auto result = std::find(std::begin(data)+pos, std::end(data), c);
+  if(result != std::end(data))
+    return std::distance(std::begin(data), result);
+  else
+    return npos;
+}
+
+string operator+(const string& lhs, const string& rhs)
+{
+  debug_print(debug::utility, "operator+ called on strings \'", lhs, "\' and \'", rhs, "\'.\n");
+  string result(lhs.size()+rhs.size()-1);
+  std::copy(std::begin(lhs), std::end(lhs)-1, std::begin(result));
+
+  std::copy(std::begin(rhs), std::end(rhs), std::begin(result)+lhs.size()-1);
+
+  return result;
 }
 
 } // namespace utility

@@ -41,27 +41,16 @@ THE SOFTWARE.
 namespace architekton
 {
 
-#ifdef _WIN32
-using uchar = wchar_t;
-using uostream = std::wostream;
-using ustring = std::wstring;
-using ustring_vector = std::vector<ustring>;
-using ustring_set = std::set<ustring>;
+// Forward declarations
+namespace utility
+{
+struct file;
+class string;
+}
 
-extern std::wostream& ucout;
-extern std::wostream& ucerr;
-#else
-using uchar = char;
-using uostream = std::ostream;
-using ustring std::string;
-using ustring_vector = std::vector<ustring>;
-using ustring_set = std::set<ustring>;
-
-extern std::ostream& ucout;
-extern std::ostream& ucerr;
-#endif
-
-uostream& operator<<(uostream& os, const ustring_vector& list);
+using file_set = std::set<utility::file>;
+using string_set = std::set<utility::string>;
+using string_vector = std::vector<utility::string>;
 
 } // namespace architekton
 

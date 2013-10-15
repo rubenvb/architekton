@@ -63,7 +63,7 @@ enum class toolchain
 
 struct options
 {
-  ustring_set targets_to_build;
+  string_set targets_to_build;
 
   architecture build_architecture;
   os build_os;

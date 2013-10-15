@@ -31,21 +31,12 @@ THE SOFTWARE.
 #define ARCHITEKTON_COMMANDLINE_H
 
 #include "architekton/global.h++"
-#include "architekton/options.h++"
-#include "architekton/types.h++"
 
-#ifdef _WIN32
-#define WIN32_MEAN_AND_LEAN
-#include <windows.h>
-#undef WIN32_MEAN_AND_LEAN
-#endif
-
-#include <stdexcept>
-#include <utility>
-#include <vector>
 
 namespace architekton
 {
+struct options;
+
 namespace utility
 {
 

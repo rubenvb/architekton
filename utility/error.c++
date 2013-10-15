@@ -23,31 +23,48 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - error.c++
+ * architekton - utility/error.c++
  * Class implementations.
  **/
 
-#include "architekton/error.h++"
+#include "architekton/utility/error.h++"
+#include "architekton/utility/file.h++"
+#include "architekton/utility/string.h++"
 
-#include "architekton/utility.h++"
+#include "architekton/types.h++"
+
+#include <iostream>
+  using std::wcerr;
 
 namespace architekton
 {
 
+error::~error()
+{}
+
+error::error(utility::string message,
+      const file_set& files)
+: message(message),
+  list()
+{
+  list.reserve(files.size());
+  for(auto&& item : files)
+  {
+    list.push_back(item.name);
+  }
+}
+
 void error::print() const
 {
-  ucerr << "Error:\n"
-            "\t" << message << "\n";
+  wcerr << "Error:\n"
+           "\t" << message << "\n";
   if(!list.empty())
     {
       for(auto&& item : list)
       {
-        ucerr << "\t" << item << "\n";
+        wcerr << "\t" << item << "\n";
       }
     }
 }
 
 } // namespace architekton
-
-#include "architekton/error.h++"
-
