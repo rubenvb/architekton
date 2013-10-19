@@ -63,6 +63,8 @@ enum class toolchain
 
 struct options
 {
+  string main_project_file;
+
   string_set targets_to_build;
 
   architecture build_architecture;

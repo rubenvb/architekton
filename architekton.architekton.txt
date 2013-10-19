@@ -1,3 +1,8 @@
+#
+# architekton project file
+#
+###########################
+#
 # The MIT License (MIT)
 #
 # Copyright (c) 2013 Ruben Van Boxem
@@ -20,50 +25,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-#
-# the architekton project
-#
-
-TEMPLATE = app
-CONFIG += console
-CONFIG -= app_bundle
-CONFIG -= qt
-
-CONFIG += debug_and_release
-
-OTHER_FILES += Codestyle.txt \
-    architekton.architekton.txt
-
-# mess to work with *.c++ extension
-QMAKE_EXT_CPP = .c++
-*msvc*:QMAKE_CXXFLAGS += /Tp # doesn't work :(
-*g++*:QMAKE_CXXFLAGS += -std=c++11 -pedantic-errors -Wextra \#-Werror \
-                        -Winit-self -Wmissing-include-dirs \
-                        -Wstrict-aliasing
-
-CONFIG(debug, debug|release)
+app architekton
 {
-  DEFINES += ARCHITEKTON_DEBUG
+  HEADER_DIRS .
+  HEADERS architekton/*.h++
+
+  SOURCE_DIRS .
+  SOURCES *.c++
 }
 
-SOURCES += \
-    main.c++ \
-    utility/debug.c++ \
-    types.c++ \
-    utility/commandline.c++ \
-    utility/string.c++ \
-    utility/file.c++ \
-    utility/error.c++
-
-HEADERS += \
-    architekton/utility.h++ \
-    architekton/utility/print.h++ \
-    architekton/utility/debug.h++ \
-    architekton/utility/make_unique.h++ \
-    architekton/utility/commandline.h++ \
-    architekton/global.h++ \
-    architekton/types.h++ \
-    architekton/utility/string.h++ \
-    architekton/options.h++ \
-    architekton/utility/file.h++ \
-    architekton/utility/error.h++

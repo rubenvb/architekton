@@ -108,7 +108,7 @@ public:
   string substr(size_type pos,
                 size_type count = npos) const;
   std::pair<string, string> split(string::size_type start,
-                                  string::char_type split = '=');
+                                  string::char_type split);
 
   // find
   size_type find(char_type c,

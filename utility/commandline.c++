@@ -63,13 +63,13 @@ void parse_commandline(int argc,
     {
       if(arg[1] == '-') // arguments should never be empty (min. length 2)
       {
-        const auto key_value = arg.split(2);
-        debug_print(debug::commandline, "Project argument: key=\'", key_value.first, "\'', value=\'", key_value.second, "\'\n");
+        const auto key_value = arg.split(2, '=');
+        debug_print(debug::commandline, "Project argument (-key[=value]): key=\'", key_value.first, "\'', value=\'", key_value.second, "\'\n");
       }
       else
       {
-        const auto key_value = arg.split(1);
-        debug_print(debug::commandline, "Architekton argument: key=\'", key_value.first, "\', value=\'", key_value.second, "\'\n");
+        const auto key_value = arg.split(1, '=');
+        debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key_value.first, "\', value=\'", key_value.second, "\'\n");
       }
     }
     else
@@ -77,6 +77,7 @@ void parse_commandline(int argc,
       debug_print(debug::commandline, "Dashless argument: \'", arg, "\'\n");
       if(first_dashless_argument)
       {
+        first_dashless_argument = false;
         if(directory_exists(arg))
         {
           debug_print(debug::commandline, "Possible source directory: \'", arg, "\'.\n");
@@ -88,34 +89,31 @@ void parse_commandline(int argc,
             project_files = find_files(".", "*.architekton.txt");
             if(project_files.empty())
               throw error("No project file found. Please specify the path to a *.architekton.txt file to be built.");
+
+            // get rid of goto
+            goto target_to_build;
           }
 
           if(project_files.size() > 1)
             throw error("Multiple *.architekton.txt files found. Please specify the filename for the project to be built. Files found:", project_files);
 
           // We now have exactly one project file
-          const auto&& stream_ptr(open_ifstream(*project_files.begin()));
-          auto&& stream = *stream_ptr;
-          if(!stream)
-            throw error("Unable to open *.architekton.txt file: " + project_files.begin()->name);
+          options.main_project_file = project_files.begin()->name;
         }
         else if(file_exists(arg))
         {
           debug_print(debug::commandline, "Possible project file: \'", arg, "\'.\n");
           auto project_files = find_files(arg);
+          // failure here would mean a bug in file_exists or find_files that needs fixing
+          project_file = project_files.begin()->name;
         }
-
-
       }
+      target_to_build:
       debug_print(debug::commandline, "Target to build: \'", arg, "\'\n");
       if(!options.targets_to_build.insert(arg).second)
-        print("Commandline warning: target \'", arg, "\' specified twice on the commandline.\n");
-
-
+        print("Warning: target \'", arg, "\' specified twice on the commandline.\n");
     }
-
   }
-
 }
 
 } // namespace utility

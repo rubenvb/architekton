@@ -110,7 +110,9 @@ file_set find_files(const string& directory,
   file_set files;
 #ifdef _WIN32
   WIN32_FIND_DATAW data;
-  const string filename = /*"\\\\?\\"+current_working_directory()+*/directory+ (pattern.empty() ? "": "/"+pattern);
+  const string filename = //"\\\\?\\" + current_working_directory() +
+                          directory + (pattern.empty() ? "": "/"+pattern);
+
   HANDLE result = FindFirstFileW(filename.raw(), &data);
   if(result == INVALID_HANDLE_VALUE)
     throw error("Cannot find file: " + filename);
