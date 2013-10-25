@@ -69,7 +69,7 @@ void parse_commandline(int argc,
       else
       {
         const auto key_value = arg.split(1, '=');
-        debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key_value.first, "\', value=\'", key_value.second, "\'\n");
+        set_option(key_value.first, key_value.second, options);
       }
     }
     else
@@ -99,13 +99,15 @@ void parse_commandline(int argc,
 
           // We now have exactly one project file
           options.main_project_file = project_files.begin()->name;
+          continue;
         }
         else if(file_exists(arg))
         {
           debug_print(debug::commandline, "Possible project file: \'", arg, "\'.\n");
           auto project_files = find_files(arg);
           // failure here would mean a bug in file_exists or find_files that needs fixing
-          project_file = project_files.begin()->name;
+          options.main_project_file = project_files.begin()->name;
+          continue;
         }
       }
       target_to_build:
@@ -114,6 +116,18 @@ void parse_commandline(int argc,
         print("Warning: target \'", arg, "\' specified twice on the commandline.\n");
     }
   }
+}
+
+void set_option(const string &key,
+                const string &value,
+                options &options)
+{
+  debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key, "\', value=\'", value, "\'\n");
+  if(key == "debug")
+  {
+    debug_print(debug::commandline, "\'debug\' option currently unhandled.");
+  }
+
 }
 
 } // namespace utility

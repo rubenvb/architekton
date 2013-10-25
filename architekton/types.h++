@@ -36,6 +36,7 @@ THE SOFTWARE.
 
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace architekton
@@ -49,6 +50,7 @@ class string;
 }
 
 using file_set = std::set<utility::file>;
+using string_pair = std::pair<utility::string, utility::string>;
 using string_set = std::set<utility::string>;
 using string_vector = std::vector<utility::string>;
 

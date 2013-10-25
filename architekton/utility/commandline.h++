@@ -32,17 +32,21 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-
 namespace architekton
 {
 struct options;
 
 namespace utility
 {
+class string;
 
 void parse_commandline(int argc,
                        char* argv[],
                        options& options);
+
+void set_option(const string& key,
+                const string& value,
+                options& options);
 
 } // namespace utility
 

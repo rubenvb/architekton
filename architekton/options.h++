@@ -33,7 +33,7 @@ THE SOFTWARE.
 #include "architekton/global.h++"
 #include "architekton/types.h++"
 
-#include <string>
+#include "architekton/utility/file.h++"
 
 namespace architekton
 {
@@ -63,7 +63,7 @@ enum class toolchain
 
 struct options
 {
-  string main_project_file;
+  utility::string main_project_file;
 
   string_set targets_to_build;
 
