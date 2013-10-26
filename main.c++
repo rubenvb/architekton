@@ -46,7 +46,6 @@ int main(int argc, char* argv[])
 
     print("Starting build in \'", current_working_directory(), "\'.\n");
 
-    debug_print(debug::always, "Step 1: Commandline arguments.\n");
     options options;
     parse_commandline(argc, argv, options);
   }

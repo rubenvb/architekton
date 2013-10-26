@@ -72,7 +72,8 @@ struct file
        FILETIME last_modified)
   : name(filename), last_modified(filetime_to_time_t(last_modified)) {}
 #else
-       time_t last_modified = 0);
+       time_t last_modified = 0)
+    : name(filename), last_modified(last_modified) {}
 #endif
 
   bool operator<(const file& rhs) const { return name < rhs.name; }

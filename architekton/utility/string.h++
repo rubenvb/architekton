@@ -33,8 +33,6 @@ THE SOFTWARE.
 #include "architekton/global.h++"
 #include "architekton/types.h++"
 
-#include "architekton/utility/debug.h++"
-
 #include <algorithm>
 #include <cstring>
 #ifdef _WIN32
@@ -100,6 +98,9 @@ public:
   const char_type& operator[](size_type index) const { return data[index]; }
   char_type& operator[](size_type index) { return data[index]; }
 
+  const char_type& back() const { return data[data.size()-1]; }
+  char_type& back() { return data[data.size()-1]; }
+
   // comparison
   bool operator==(const string& rhs) const { return data == rhs.data; }
   bool operator<(const string& rhs) const { return data < rhs.data; }
@@ -114,14 +115,11 @@ public:
   size_type find(char_type c,
                  size_type pos = 0) const;
 
-  // string& append(char c);
-  //string append(const string& s);
-
 private:
   std::vector<char_type> data;
 };
 
-// operator<<
+// operator<< for stream output
 inline std::ostream& operator<<(std::ostream& os, const string& s)
 {
   return os << s.raw();
@@ -131,7 +129,7 @@ inline std::wostream& operator<<(std::wostream& os, const string& s)
   return os << s.raw();
 }
 
-// Operator+
+// Operator+ for string concatenation
 string operator+(const string& lhs, const string& rhs);
 inline string operator+(const string& lhs, const char* rhs)
 {
@@ -140,6 +138,17 @@ inline string operator+(const string& lhs, const char* rhs)
 inline string operator+(const char* lhs, const string& rhs)
 {
   return string(lhs) + rhs;
+}
+
+// operator/ for directory concatenation
+string operator/(const string& lhs, const string& rhs);
+inline string operator/(const string& lhs, const char* rhs)
+{
+  return lhs / string(rhs);
+}
+inline string operator/(const char* lhs, const string& rhs)
+{
+  return string(lhs) / rhs;
 }
 
 } // namespace utility

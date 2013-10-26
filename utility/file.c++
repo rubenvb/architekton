@@ -51,7 +51,11 @@ THE SOFTWARE.
 #include <windows.h>
 #undef WIN32_MEAN_AND_LEAN
 #else
+#include <dirent.h>
+#include <fnmatch.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif
 
 namespace architekton
@@ -76,31 +80,33 @@ string current_working_directory()
 }
 bool directory_exists(const string& name)
 {
+  debug_print(debug::utility, "directory_exists called on ", name);
 #ifdef _WIN32
   DWORD attributes = GetFileAttributesW(name.raw());
   return (attributes != INVALID_FILE_ATTRIBUTES
           && (attributes & FILE_ATTRIBUTE_DIRECTORY));
 #else
   struct stat info;
-  if(stat(name.c_str(), &info) == 0)
-    return false;
-  else
+  if(stat(name.raw(), &info) == 0)
     return S_ISDIR(info.st_mode);
+  else
+    return false;
 #endif
 }
 
 bool file_exists(const string& name)
 {
+  debug_print(debug::utility, "file_exists called on ", name);
 #ifdef _WIN32
   DWORD attributes = GetFileAttributesW(name.raw());
   return (attributes != INVALID_FILE_ATTRIBUTES
           && !(attributes & FILE_ATTRIBUTE_DIRECTORY));
 #else
   struct stat info;
-  if(stat(name.c_str(), &info) == 0)
-    return false;
-  else
+  if(stat(name.raw(), &info) == 0)
     return S_ISREG(info.st_mode);
+  else
+    return false;
 #endif
 }
 
@@ -111,7 +117,7 @@ file_set find_files(const string& directory,
 #ifdef _WIN32
   WIN32_FIND_DATAW data;
   const string filename = //"\\\\?\\" + current_working_directory() +
-                          directory + (pattern.empty() ? "": "/"+pattern);
+                          directory / pattern;
 
   HANDLE result = FindFirstFileW(filename.raw(), &data);
   if(result == INVALID_HANDLE_VALUE)
@@ -119,19 +125,44 @@ file_set find_files(const string& directory,
 
   do
   {
-    debug_print(debug::utility, "Found file or directory: \'", data.cFileName, "\'.\n");
+    debug_print(debug::utility, "Found file or directory: \'", data.cFileName, "\'.");
     if(!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-      debug_print(debug::utility, "Found file: \'", data.cFileName, "\'.\n");
+      debug_print(debug::utility, "Found file: \'", data.cFileName, "\'.");
       files.insert(file(data.cFileName, data.ftLastWriteTime));
     }
   } while(FindNextFileW(result, &data) != 0);
 #else
   // TODO implement for Unix
   // use fnmatch for wildcard matching
-  (void)(directory);
-  (void)(pattern);
-  throw error("find_files unimplemented");
+  DIR* dir = opendir(directory.raw());
+
+  if(dir == nullptr)
+    throw error("Unable to open directory: " + directory);
+
+  const string filename = directory / pattern;
+  for(dirent* entry = readdir(dir); entry != nullptr; entry = readdir(dir))
+  {
+    // skip . and ..
+    if(string(entry->d_name) == "." || string(entry->d_name) == "..")
+      continue;
+
+    struct stat attributes;
+    const string entry_name = directory / entry->d_name;
+    if(stat(entry_name.raw(), &attributes) == -1)
+      throw error("Stat call failed for: \'" + entry_name + "\'.");
+
+    debug_print(debug::utility, "Found file or directory: \'", entry_name);
+    if(S_ISREG(attributes.st_mode))
+    {
+      debug_print(debug::utility, "Matching \'", filename, "\' to \'", entry_name.raw(), "\'.");
+      if(fnmatch(filename.raw(), entry_name.raw(), FNM_PATHNAME) == 0)
+      {
+        debug_print(debug::utility, "Match found.");
+        files.insert(file(entry->d_name, attributes.st_mtime));
+      }
+    }
+  }
 #endif
   return files;
 }
@@ -175,11 +206,11 @@ unique_ptr<ostream> open_ofstream(const file& filen)
 #else
 unique_ptr<istream> open_ifstream(const file& file)
 {
-  return unique_ptr<istream>(new ifstream(file.name));
+  return unique_ptr<istream>(new ifstream(file.name.raw()));
 }
-unique_ptr<ostream> open_ofstream(const file& file.name)
+unique_ptr<ostream> open_ofstream(const file& file)
 {
-  return unique_ptr<ostream>(new ofstream(file.name));
+  return unique_ptr<ostream>(new ofstream(file.name.raw()));
 }
 #endif
 

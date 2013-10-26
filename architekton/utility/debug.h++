@@ -52,6 +52,7 @@ enum debug : std::uint32_t
   parser = 4,
   parslexer = lexer ^ parser,
   utility = 8,
+  string = 16,
   // ...
   always = 0xffffffff,
   everything = always
@@ -69,21 +70,24 @@ inline void debug_print(debug::debug level, ArgTypes... args)
     switch(level)
     {
       case debug::commandline:
-        print("~COMMANDLINE~");
+        print("~COMMANDLINE~ ");
         break;
       case debug::lexer:
-        print("~LEXER~~~~~~~");
+        print("~LEXER~~~~~~~ ");
         break;
       case debug::parser:
-        print("~PARSER~~~~~~");
+        print("~PARSER~~~~~~ ");
         break;
       case debug::utility:
-        print("~UTILITY~~~~~");
+        print("~UTILITY~~~~~ ");
+        break;
+      case debug::string:
+        print("~STRING~~~~~~ ");
         break;
       default:
-        print("~UNKNOWN~~~~~");
+        print("~UNKNOWN~~~~~ ");
     }
-    print(args...);
+    print(args..., '\n');
   }
 }
 

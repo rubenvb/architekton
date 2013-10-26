@@ -55,6 +55,8 @@ void parse_commandline(int argc,
                        options& options)
 {
 #endif
+  debug_print(debug::commandline, "Step 1: Commandline arguments.");
+
   string_vector args(argv+1, argv+argc); // skip argv[0]
   bool first_dashless_argument = true;
   for(auto&& arg : args)
@@ -64,7 +66,7 @@ void parse_commandline(int argc,
       if(arg[1] == '-') // arguments should never be empty (min. length 2)
       {
         const auto key_value = arg.split(2, '=');
-        debug_print(debug::commandline, "Project argument (-key[=value]): key=\'", key_value.first, "\'', value=\'", key_value.second, "\'\n");
+        debug_print(debug::commandline, "Project argument (-key[=value]): key=\'", key_value.first, "\'', value=\'", key_value.second, "\'.");
       }
       else
       {
@@ -74,18 +76,18 @@ void parse_commandline(int argc,
     }
     else
     {
-      debug_print(debug::commandline, "Dashless argument: \'", arg, "\'\n");
+      debug_print(debug::commandline, "Dashless argument: \'", arg, "\'.");
       if(first_dashless_argument)
       {
         first_dashless_argument = false;
         if(directory_exists(arg))
         {
-          debug_print(debug::commandline, "Possible source directory: \'", arg, "\'.\n");
+          debug_print(debug::commandline, "Possible source directory: \'", arg, "\'.");
           auto project_files = find_files(arg, "*.architekton.txt");
 
           if(project_files.empty())
           {
-            debug_print(debug::commandline, "No project file found in \'", arg, "\', checking \'.\'.\n");
+            debug_print(debug::commandline, "No project file found in \'", arg, "\', checking \'.\'.");
             project_files = find_files(".", "*.architekton.txt");
             if(project_files.empty())
               throw error("No project file found. Please specify the path to a *.architekton.txt file to be built.");
@@ -99,11 +101,12 @@ void parse_commandline(int argc,
 
           // We now have exactly one project file
           options.main_project_file = project_files.begin()->name;
+          debug_print(debug::commandline, "Main project file set: \'", options.main_project_file);
           continue;
         }
         else if(file_exists(arg))
         {
-          debug_print(debug::commandline, "Possible project file: \'", arg, "\'.\n");
+          debug_print(debug::commandline, "Possible project file: \'", arg, "\'.");
           auto project_files = find_files(arg);
           // failure here would mean a bug in file_exists or find_files that needs fixing
           options.main_project_file = project_files.begin()->name;
@@ -111,23 +114,26 @@ void parse_commandline(int argc,
         }
       }
       target_to_build:
-      debug_print(debug::commandline, "Target to build: \'", arg, "\'\n");
+      debug_print(debug::commandline, "Target to build: \'", arg, "\'.");
       if(!options.targets_to_build.insert(arg).second)
-        print("Warning: target \'", arg, "\' specified twice on the commandline.\n");
+        print("Warning: target \'", arg, "\' specified twice on the commandline.");
     }
   }
+
+  // reality check
+  if(options.main_project_file.empty())
+    throw error("No project file found. Please specify a path to an *.architekton.txt file.");
 }
 
 void set_option(const string &key,
                 const string &value,
                 options &options)
 {
-  debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key, "\', value=\'", value, "\'\n");
+  debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key, "\', value=\'", value, "\'.");
   if(key == "debug")
   {
     debug_print(debug::commandline, "\'debug\' option currently unhandled.");
   }
-
 }
 
 } // namespace utility

@@ -29,6 +29,8 @@ THE SOFTWARE.
 
 #include "architekton/utility/string.h++"
 
+#include "architekton/utility/debug.h++"
+
 namespace architekton
 {
 namespace utility
@@ -68,14 +70,32 @@ string::size_type string::find(char_type c,
     return npos;
 }
 
-string operator+(const string& lhs, const string& rhs)
+string operator+(const string& left, const string& right)
 {
-  debug_print(debug::utility, "operator+ called on strings \'", lhs, "\' and \'", rhs, "\'.\n");
-  string result(lhs.size()+rhs.size()-1);
-  std::copy(std::begin(lhs), std::end(lhs)-1, std::begin(result));
+  debug_print(debug::string, "Concatenating strings \'", left, "\' and \'", right, "\'.");
+  string result(left.size() + right.size()-1);
+  std::copy(std::begin(left), std::end(left)-1, std::begin(result));
 
-  std::copy(std::begin(rhs), std::end(rhs), std::begin(result)+lhs.size()-1);
+  std::copy(std::begin(right), std::end(right), std::begin(result) + left.size()-1);
 
+  debug_print(debug::string, "Result: \'", result, "\'.");
+  return result;
+}
+
+string operator/(const string& left, const string& right)
+{
+  debug_print(debug::string, "Concatenating paths: \'", left, "\' and \'", right, "\'.");
+  string result;
+  if(left.empty())
+    result = right;
+  else if(right.empty())
+    result = left;
+  else if('/' == left.back())
+    result = left.substr(0,left.size()-2) + "/" + right;
+  else
+    result = left + "/" + right;
+
+  debug_print(debug::string, "Result: \'", result, "\'.");
   return result;
 }
 
