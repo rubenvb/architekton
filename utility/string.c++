@@ -39,24 +39,19 @@ namespace utility
 string string::substr(size_type pos,
                       size_type count) const
 {
-  string result;
-  if(count == npos)
-    count = size();
-
-  result.reserve(count-pos+1);
-  for(size_type i = pos; pos < data.size() && pos < count; ++i)
-    result.data.push_back(data[i]);
-
-  //print(data.back(), "\n");
-  //result.data.push_back('\0');
-
-  return result;
+  if(pos+count > data.size())
+    throw std::out_of_range("substr called for out of range blabla");
+  if(count != npos)
+    return string(&data[pos], &data[pos+count]);
+  else
+    return string(&data[pos], &data[data.size()-1]);
 }
 
-std::pair<string, string> string::split(size_type start,
-                                        char_type split)
+std::pair<string, string> string::split(char_type split,
+                                        size_type start)
 {
-  const auto index = find(split);
+  const auto index = find(split, start);
+
   return { substr(start, index), substr(index, string::npos)};
 }
 

@@ -34,6 +34,7 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
+#include <memory>
 #include <set>
 #include <string>
 #include <utility>
@@ -42,17 +43,20 @@ THE SOFTWARE.
 namespace architekton
 {
 
-// Forward declarations
 namespace utility
 {
 struct file;
 class string;
 }
 
+class target;
+
 using file_set = std::set<utility::file>;
 using string_pair = std::pair<utility::string, utility::string>;
 using string_set = std::set<utility::string>;
 using string_vector = std::vector<utility::string>;
+
+using target_vector = std::vector<std::unique_ptr<target>>;
 
 } // namespace architekton
 

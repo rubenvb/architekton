@@ -30,7 +30,6 @@ THE SOFTWARE.
 #ifndef ARCHITEKTON_UTILITY_H
 #define ARCHITEKTON_UTILITY_H
 
-#include "architekton/utility/commandline.h++"
 #include "architekton/utility/debug.h++"
 #include "architekton/utility/error.h++"
 #include "architekton/utility/file.h++"

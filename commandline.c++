@@ -27,13 +27,13 @@ THE SOFTWARE.
  * Function implementations.
  **/
 
-#include "architekton/utility/commandline.h++"
+#include "architekton/commandline.h++"
+#include "architekton/options.h++"
+
 #include "architekton/utility/debug.h++"
 #include "architekton/utility/error.h++"
 #include "architekton/utility/file.h++"
 #include "architekton/utility/string.h++"
-
-#include "architekton/options.h++"
 
 namespace architekton
 {

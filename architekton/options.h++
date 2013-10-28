@@ -63,6 +63,8 @@ enum class toolchain
 
 struct options
 {
+  void detect_environment(); // detect OS/shell
+
   utility::string main_project_file;
 
   string_set targets_to_build;

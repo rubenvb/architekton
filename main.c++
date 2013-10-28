@@ -27,8 +27,10 @@ THE SOFTWARE.
  * main function and execution timing.
  **/
 
-#include "architekton/utility.h++"
+#include "architekton/commandline.h++"
 #include "architekton/options.h++"
+#include "architekton/project.h++"
+#include "architekton/utility.h++"
 
 #include <chrono>
 
@@ -48,6 +50,12 @@ int main(int argc, char* argv[])
 
     options options;
     parse_commandline(argc, argv, options);
+
+    const string project_name = options.main_project_file.split('.').first;
+    print("Building project \'", project_name, "\'.\n");
+
+    project project(project_name);
+    project.load_project(options);
   }
   catch(const error& e)
   {

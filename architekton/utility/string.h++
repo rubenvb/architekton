@@ -72,6 +72,13 @@ public:
 
   string(size_type size = 0)
   : data(size) {}
+  string(const char_type* begin,
+         const char_type* end)
+  : data(begin, end)
+  {
+    if(data.back() != '\0')
+      data.push_back('\0');
+  }
 
   // constructable from plain (ASCII) C-string
   string(const char* c_string)
@@ -108,8 +115,8 @@ public:
   // bits and parts
   string substr(size_type pos,
                 size_type count = npos) const;
-  std::pair<string, string> split(string::size_type start,
-                                  string::char_type split);
+  std::pair<string, string> split(string::char_type split,
+                                  string::size_type start = 0);
 
   // find
   size_type find(char_type c,

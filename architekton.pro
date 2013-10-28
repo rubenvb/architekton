@@ -49,21 +49,27 @@ CONFIG(debug, debug|release)
 SOURCES += \
     main.c++ \
     types.c++ \
-    utility/commandline.c++ \
     utility/string.c++ \
     utility/file.c++ \
-    utility/error.c++ \
-    utility/debug.c++
+    utility/debug.c++ \
+    target.c++ \
+    project.c++ \
+    external.c++ \
+    commandline.c++ \
+    error.c++
 
 HEADERS += \
     architekton/utility.h++ \
     architekton/utility/print.h++ \
     architekton/utility/make_unique.h++ \
-    architekton/utility/commandline.h++ \
     architekton/global.h++ \
     architekton/types.h++ \
     architekton/utility/string.h++ \
     architekton/options.h++ \
     architekton/utility/file.h++ \
-    architekton/utility/error.h++ \
-    architekton/utility/debug.h++
+    architekton/utility/debug.h++ \
+    architekton/target.h++ \
+    architekton/project.h++ \
+    architekton/external.h++ \
+    architekton/commandline.h++ \
+    architekton/error.h++

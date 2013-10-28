@@ -35,7 +35,7 @@ THE SOFTWARE.
 
 namespace architekton
 {
-#ifdef _WIN32
+/*#ifdef _WIN32
 std::wostream& ucout = std::wcout;
 std::wostream& ucerr = std::wcerr;
 #else
@@ -50,6 +50,6 @@ wostream& operator<<(wostream& os, const string_vector& list)
   for(auto&& item : list)
     os << "\t" << item;
   return os;
-}
+}*/
 
 }
