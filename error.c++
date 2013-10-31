@@ -27,7 +27,8 @@ THE SOFTWARE.
  * Class implementations.
  **/
 
-#include "architekton/utility/error.h++"
+#include "architekton/error.h++"
+
 #include "architekton/utility/file.h++"
 #include "architekton/utility/string.h++"
 

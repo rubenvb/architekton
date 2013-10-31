@@ -33,6 +33,8 @@ THE SOFTWARE.
 #include "architekton/global.h++"
 #include "architekton/types.h++"
 
+#include "architekton/utility/debug.h++"
+
 #include <algorithm>
 #include <cstring>
 #ifdef _WIN32

@@ -27,10 +27,10 @@ THE SOFTWARE.
  * Class and function implementation.
  **/
 
+#include "architekton/error.h++"
 #include "architekton/utility/file.h++"
 
 #include "architekton/utility/debug.h++"
-#include "architekton/utility/error.h++"
 #include "architekton/utility/string.h++"
 
 #include <ctime>

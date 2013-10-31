@@ -39,10 +39,15 @@ namespace utility
 string string::substr(size_type pos,
                       size_type count) const
 {
+  //TODO: make better
   if(pos+count > data.size())
     throw std::out_of_range("substr called for out of range blabla");
+
   if(count != npos)
-    return string(&data[pos], &data[pos+count]);
+  {
+    const size_type end = pos+count == data.size() ? pos+count-1 : pos+count;
+    return string(&data[pos], &data[end]);
+  }
   else
     return string(&data[pos], &data[data.size()-1]);
 }

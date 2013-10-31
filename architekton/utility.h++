@@ -31,7 +31,6 @@ THE SOFTWARE.
 #define ARCHITEKTON_UTILITY_H
 
 #include "architekton/utility/debug.h++"
-#include "architekton/utility/error.h++"
 #include "architekton/utility/file.h++"
 #include "architekton/utility/make_unique.h++"
 #include "architekton/utility/print.h++"
