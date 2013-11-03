@@ -28,16 +28,18 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
-
+CONFIG += c++11
 CONFIG += debug_and_release
 
 OTHER_FILES += Codestyle.txt \
-    architekton.architekton.txt
+    architekton.architekton.txt \
+    CMakeLists.txt
 
 # mess to work with *.c++ extension
 QMAKE_EXT_CPP = .c++
-*msvc*:QMAKE_CXXFLAGS += /Tp # doesn't work :(
-*g++*:QMAKE_CXXFLAGS += -std=c++11 -pedantic-errors -Wextra \#-Werror \
+QMAKE_EXT_H = .h++
+*msvc*:QMAKE_CPPFLAGS += /Tp # doesn't work :(
+*g++*:QMAKE_CXXFLAGS += -pedantic-errors -Wextra \#-Werror \
                         -Winit-self -Wmissing-include-dirs \
                         -Wstrict-aliasing
 

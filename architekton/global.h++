@@ -32,6 +32,11 @@ THE SOFTWARE.
 
 #include <cstdint>
 
+#ifdef _MSC_VER
+#undef constexpr
+#define constexpr const
+#endif
+
 namespace architekton
 {
 struct version
@@ -40,6 +45,11 @@ struct version
   static constexpr std::uint8_t minor = 0;
   static constexpr std::uint8_t bugfix = 0;
 };
-}
+
+} // namespace architekton
+
+#ifdef _MSC_VER
+#undef constexpr
+#endif
 
 #endif // ARCHITEKTON_GLOBAL_H

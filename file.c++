@@ -66,7 +66,7 @@ string current_working_directory()
   while(cwd.size() < 1024*1024) // more magic numbers!
   {
 #ifdef _WIN32
-    DWORD result = GetCurrentDirectory(static_cast<DWORD>(cwd.size()), cwd.raw());
+    DWORD result = GetCurrentDirectoryW(static_cast<DWORD>(cwd.size()), cwd.raw());
 #else
     char* result = getcwd(cwd.raw(), cwd.size());
 #endif
@@ -191,11 +191,11 @@ unique_ptr<ostream> open_ofstream(const file& file)
 # elif defined(_MSC_VER)
 unique_ptr<istream> open_ifstream(const file& file)
 {
-  return unique_ptr<istream>(new ifstream(file.name));
+  return unique_ptr<istream>(new ifstream(file.name.raw()));
 }
-unique_ptr<ostream> open_ofstream(const file& filen)
+unique_ptr<ostream> open_ofstream(const file& file)
 {
-  return unique_ptr<ostream>(new ofstream(file.name));
+  return unique_ptr<ostream>(new ofstream(file.name.raw()));
 }
 # else
 #error unknown fstream implementation - no unicode filename support

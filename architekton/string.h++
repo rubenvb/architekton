@@ -43,6 +43,11 @@ THE SOFTWARE.
 #include <utility>
 #include <vector>
 
+#ifdef _MSC_VER
+#undef constexpr
+#define constexpr const
+#endif
+
 namespace architekton
 {
 
@@ -158,6 +163,10 @@ inline string operator/(const char* lhs, const string& rhs)
 {
   return string(lhs) / rhs;
 }
+
+#ifdef _MSC_VER
+#undef constexpr
+#endif
 
 } // namespace architekton
 
