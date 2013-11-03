@@ -24,19 +24,17 @@ THE SOFTWARE.
 
 /**
  * architekton - main.c++
- * main function and execution timing.
+ * Main function with execution timing.
  **/
 
 #include "architekton/commandline.h++"
 #include "architekton/error.h++"
 #include "architekton/options.h++"
 #include "architekton/project.h++"
-#include "architekton/utility.h++"
 
 #include <chrono>
 
 using namespace architekton;
-using namespace architekton::utility;
 using namespace std::chrono;
 
 int main(int argc, char* argv[])
@@ -52,11 +50,9 @@ int main(int argc, char* argv[])
     options options;
     parse_commandline(argc, argv, options);
 
-    const string project_name = options.main_project_file.split('.').first;
-    print("Building project \'", project_name, "\'.\n");
-
-    project project(project_name);
-    project.load_project(options);
+    project project(options);
+    print("Loading project \'", project.name, "\'.\n");
+    project.load_project();
   }
   catch(const error& e)
   {

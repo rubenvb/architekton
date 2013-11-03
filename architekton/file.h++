@@ -32,8 +32,8 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
+#include "architekton/string.h++"
 #include "architekton/types.h++"
-#include "architekton/utility/string.h++"
 
 #include <ctime>
 #include <iostream>
@@ -48,8 +48,6 @@ THE SOFTWARE.
 #endif
 
 namespace architekton
-{
-namespace utility
 {
 
 string current_working_directory();
@@ -85,9 +83,6 @@ struct file
 // File stream opening wrappers for better Unicode filename support (Windows)
 std::unique_ptr<std::istream> open_ifstream(const file& file);
 std::unique_ptr<std::ostream> open_ofstream(const file& file);
-
-
-} // namespace utility
 
 } // namespace architekton
 

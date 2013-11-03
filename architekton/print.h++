@@ -23,31 +23,55 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - utility/make_unique.h++
- * Simple make_unique not fit for arrays.
+ * architekton - print.h++
+ * Type-safe simple output function.
  **/
 
-#ifndef ARCHITEKTON_MAKE_UNIQUE_H
-#define ARCHITEKTON_MAKE_UNIQUE_H
+#ifndef ARCHITEKTON_PRINT_H
+#define ARCHITEKTON_PRINT_H
 
 #include "architekton/global.h++"
 
-#include <memory>
-#include <utility>
+#include "architekton/types.h++"
+
+#ifdef _WIN32
+#define WIN32_MEAN_AND_LEAN
+#include <windows.h>
+#undef WIN32_MEAN_AND_LEAN
+#include <fcntl.h>
+#include <io.h>
+#endif
+
+#include <iostream>
+
+#include <typeinfo>
 
 namespace architekton
 {
-namespace utility
-{
 
-template<typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args)
+inline void print() {}
+
+template <typename T, typename ...ArgTypes>
+inline void print(T t, ArgTypes ...args)
 {
-  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+  std::wcout << t;
+  if(sizeof...(args))
+    print(args...);
 }
 
-} // namespace utility
+/*template<typename... ArgTypes>
+inline void print(ArgTypes... args)
+{
+  // trick to expand variadic argument pack without recursion
+  using expand_variadic_pack  = int[];
+  // first zero is to prevent empty braced-init-list
+  // void() is to prevent overloaded operator, messing things up
+  // trick is to use the side effect of list-initializer to call a function
+  //  on every argument.
+  // (void) is to suppress "statement has no effect" warnings
+  (void)expand_variadic_pack{0, ((std::wcout << args), void(), 0)... };
+}*/
 
 } // namespace architekton
 
-#endif // ARCHITEKTON_MAKE_UNIQUE_H
+#endif // ARCHITEKTON_PRINT_H

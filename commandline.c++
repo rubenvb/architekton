@@ -28,16 +28,13 @@ THE SOFTWARE.
  **/
 
 #include "architekton/commandline.h++"
+#include "architekton/debug.h++"
 #include "architekton/error.h++"
+#include "architekton/file.h++"
 #include "architekton/options.h++"
-
-#include "architekton/utility/debug.h++"
-#include "architekton/utility/file.h++"
-#include "architekton/utility/string.h++"
+#include "architekton/string.h++"
 
 namespace architekton
-{
-namespace utility
 {
 
 #ifdef _WIN32
@@ -95,13 +92,12 @@ void parse_commandline(int argc,
             // get rid of goto
             goto target_to_build;
           }
-
           if(project_files.size() > 1)
             throw error("Multiple *.architekton.txt files found. Please specify the filename for the project to be built. Files found:", project_files);
 
           // We now have exactly one project file
           options.main_project_file = project_files.begin()->name;
-          debug_print(debug::commandline, "Main project file set: \'", options.main_project_file);
+          debug_print(debug::commandline, "Main project file set: \'", options.main_project_file, "\'.");
           continue;
         }
         else if(file_exists(arg))
@@ -135,8 +131,6 @@ void set_option(const string &key,
     debug_print(debug::commandline, "\'debug\' option currently unhandled.");
   }
 }
-
-} // namespace utility
 
 } // namespace architekton
 

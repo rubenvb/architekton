@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - target
+ * architekton - target.c++
  * Class implementation.
  **/
 

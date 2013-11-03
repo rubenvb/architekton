@@ -23,15 +23,14 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - utility/error.c++
+ * architekton - error.c++
  * Class implementations.
  **/
 
 #include "architekton/error.h++"
 
-#include "architekton/utility/file.h++"
-#include "architekton/utility/string.h++"
-
+#include "architekton/file.h++"
+#include "architekton/string.h++"
 #include "architekton/types.h++"
 
 #include <iostream>
@@ -43,8 +42,8 @@ namespace architekton
 error::~error()
 {}
 
-error::error(utility::string message,
-      const file_set& files)
+error::error(string message,
+             const file_set& files)
 : message(message),
   list()
 {

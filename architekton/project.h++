@@ -23,31 +23,38 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - project
+ * architekton - project.h++
  * Project target.
  **/
 
 #ifndef ARCHITEKTON_PROJECT_H
 #define ARCHITEKTON_PROJECT_H
 
+#include "architekton/global.h++"
+
 #include "architekton/options.h++"
+#include "architekton/string.h++"
 #include "architekton/target.h++"
 #include "architekton/types.h++"
-#include "architekton/utility/string.h++"
 
 namespace architekton
 {
+struct options;
 
 class project : public target
 {
 public:
-  project(const utility::string& name)
-  : target(name) {}
+  project(const architekton::options& options)
+  : target(options.main_project_file.split('.').first, options), filename(options.main_project_file) {}
+  project(const string& filename,
+          const architekton::options& options)
+  : target(filename.split('.').first, options) {}
 
-  void load_project(const options& options);
+  void load_project();
 
 private:
-  target_vector targets;
+  const string filename; // relative to general source directory in options
+  target_vector targets; // targets defined in project file
 };
 
 } // namespace architekton

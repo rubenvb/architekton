@@ -23,26 +23,30 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - target
+ * architekton - target.h++
  * Abstract target that can be built in various build configurations.
  **/
 
 #ifndef ARCHITEKTON_TARGET_H
 #define ARCHITEKTON_TARGET_H
 
-#include "architekton/utility/string.h++"
+#include "architekton/global.h++"
+
+#include "architekton/string.h++"
 
 namespace architekton
 {
+struct options;
 
 class target
 {
 public:
-  target(const utility::string& name)
-  : name(name) {}
+  target(const string& name,
+         const architekton::options& options)
+  : name(name), options(options) {}
 
-private:
-  const utility::string name;
+  const string name;
+  const architekton::options& options;
 };
 
 } // namespace architekton

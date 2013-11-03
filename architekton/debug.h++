@@ -23,23 +23,75 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - debug.c++
- * Definition of global debug_level.
+ * architekton - debug.h++
+ * Debug print function.
  **/
 
-#include "architekton/utility/debug.h++"
+#ifndef ARCHITEKTON_DEBUG_H
+#define ARCHITEKTON_DEBUG_H
+
+#ifndef ARCHITEKTON_DEBUG
+#define debug_print(...)
+#else
+
+#include "architekton/global.h++"
+
+#include "architekton/print.h++"
+
+#include <cstddef>
 
 namespace architekton
 {
-namespace utility
-{
 namespace debug
 {
+enum debug : std::uint32_t
+{
+  commandline = 1,
+  lexer = 2,
+  parser = 4,
+  parslexer = lexer ^ parser,
+  utility = 8,
+  string = 16,
+  // ...
+  always = 0xffffffff,
+  everything = always
+};
 
-debug level = everything;
+extern debug level;
 
 } // namespace debug
 
-} // namespace utility
+template<typename... ArgTypes>
+inline void debug_print(debug::debug level, ArgTypes... args)
+{
+  if(0 != (debug::level & level))
+  {
+    switch(level)
+    {
+      case debug::commandline:
+        print("~COMMANDLINE~ ");
+        break;
+      case debug::lexer:
+        print("~LEXER~~~~~~~ ");
+        break;
+      case debug::parser:
+        print("~PARSER~~~~~~ ");
+        break;
+      case debug::utility:
+        print("~UTILITY~~~~~ ");
+        break;
+      case debug::string:
+        print("~STRING~~~~~~ ");
+        break;
+      default:
+        print("~UNKNOWN~~~~~ ");
+    }
+    print(args..., '\n');
+  }
+}
 
 } // namespace architekton
+
+#endif
+
+#endif // ARCHITEKTON_DEBUG_H

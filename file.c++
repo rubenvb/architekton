@@ -24,14 +24,13 @@ THE SOFTWARE.
 
 /**
  * architekton - file.c++
- * Class and function implementation.
+ * Class and function implementations.
  **/
 
+#include "architekton/debug.h++"
 #include "architekton/error.h++"
-#include "architekton/utility/file.h++"
-
-#include "architekton/utility/debug.h++"
-#include "architekton/utility/string.h++"
+#include "architekton/file.h++"
+#include "architekton/string.h++"
 
 #include <ctime>
   using std::time_t;
@@ -59,8 +58,6 @@ THE SOFTWARE.
 #endif
 
 namespace architekton
-{
-namespace utility
 {
 
 string current_working_directory()
@@ -213,7 +210,5 @@ unique_ptr<ostream> open_ofstream(const file& file)
   return unique_ptr<ostream>(new ofstream(file.name.raw()));
 }
 #endif
-
-} // namespace utility
 
 } // namespace architekton

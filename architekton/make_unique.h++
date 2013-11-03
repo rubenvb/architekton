@@ -23,33 +23,27 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - types.c++
- * Function implementations.
+ * architekton - make_unique.h++
+ * Simple make_unique not fit for arrays.
  **/
 
-#include <architekton/types.h++>
-#include <architekton/utility.h++>
+#ifndef ARCHITEKTON_MAKE_UNIQUE_H
+#define ARCHITEKTON_MAKE_UNIQUE_H
 
-#include <iostream>
-  using std::wostream;
+#include "architekton/global.h++"
+
+#include <memory>
+#include <utility>
 
 namespace architekton
 {
-/*#ifdef _WIN32
-std::wostream& ucout = std::wcout;
-std::wostream& ucerr = std::wcerr;
-#else
-std::ostream& ucout = std::cout;
-std::ostream& ucerr = std::cerr;
-#endif
 
-wostream& operator<<(wostream& os, const string_vector& list)
+template<typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args)
 {
-  if(list.empty())
-    return os << "\t<empty list>";
-  for(auto&& item : list)
-    os << "\t" << item;
-  return os;
-}*/
-
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+} // namespace utility
+
+#endif // ARCHITEKTON_MAKE_UNIQUE_H

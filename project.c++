@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - project
+ * architekton - project.c++
  * Class implementation.
  **/
 
@@ -34,7 +34,7 @@ THE SOFTWARE.
 namespace architekton
 {
 
-void project::load_project(const options &options)
+void project::load_project()
 {
   throw error("project::load_project is unimplemented.");
 }

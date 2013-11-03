@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - external
+ * architekton - external.c++
  * Class implementation.
  **/
 

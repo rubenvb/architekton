@@ -24,16 +24,13 @@ THE SOFTWARE.
 
 /**
  * architekton - string.c++
- *
+ * Class implementation.
  **/
 
-#include "architekton/utility/string.h++"
-
-#include "architekton/utility/debug.h++"
+#include "architekton/debug.h++"
+#include "architekton/string.h++"
 
 namespace architekton
-{
-namespace utility
 {
 
 string string::substr(size_type pos,
@@ -53,7 +50,7 @@ string string::substr(size_type pos,
 }
 
 std::pair<string, string> string::split(char_type split,
-                                        size_type start)
+                                        size_type start) const
 {
   const auto index = find(split, start);
 
@@ -98,7 +95,5 @@ string operator/(const string& left, const string& right)
   debug_print(debug::string, "Result: \'", result, "\'.");
   return result;
 }
-
-} // namespace utility
 
 } // namespace architekton

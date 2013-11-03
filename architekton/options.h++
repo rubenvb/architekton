@@ -31,13 +31,14 @@ THE SOFTWARE.
 #define ARCHITEKTON_OPTIONS_H
 
 #include "architekton/global.h++"
-#include "architekton/types.h++"
 
-#include "architekton/utility/file.h++"
+#include "architekton/file.h++"
+#include "architekton/types.h++"
 
 namespace architekton
 {
 
+// unhardcode this shit
 enum class architecture
 {
   x86,
@@ -63,9 +64,10 @@ enum class toolchain
 
 struct options
 {
-  void detect_environment(); // detect OS/shell
+  void detect_environment(); // detect everything, big TODO.
 
-  utility::string main_project_file;
+  string source_directory;
+  string main_project_file;
 
   string_set targets_to_build;
 

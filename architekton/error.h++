@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - utility/error.h++
+ * architekton - error.h++
  * Errors to be thrown when something goes wrong.
  **/
 
@@ -31,9 +31,9 @@ THE SOFTWARE.
 #define ARCHITEKTON_ERROR
 
 #include "architekton/global.h++"
-#include "architekton/types.h++"
 
-#include "architekton/utility/string.h++"
+#include "architekton/string.h++"
+#include "architekton/types.h++"
 
 #ifdef _WIN32
 #ifndef WIN32_MEAN_AND_LEAN
@@ -51,17 +51,17 @@ namespace architekton
 class error
 {
 public:
-  error(utility::string message,
+  error(string message,
         string_vector list = {})
   : message(message), list(list) {}
-  error(utility::string message,
+  error(string message,
         const file_set& files);
   virtual ~error();
 
   virtual void print() const;
 
 private:
-  const utility::string message;
+  const string message;
   string_vector list;
 };
 

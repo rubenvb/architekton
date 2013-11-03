@@ -43,18 +43,14 @@ THE SOFTWARE.
 namespace architekton
 {
 
-namespace utility
-{
 struct file;
 class string;
-}
-
 class target;
 
-using file_set = std::set<utility::file>;
-using string_pair = std::pair<utility::string, utility::string>;
-using string_set = std::set<utility::string>;
-using string_vector = std::vector<utility::string>;
+using file_set = std::set<file>;
+using string_pair = std::pair<string, string>;
+using string_set = std::set<string>;
+using string_vector = std::vector<string>;
 
 using target_vector = std::vector<std::unique_ptr<target>>;
 

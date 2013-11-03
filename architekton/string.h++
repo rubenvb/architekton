@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - utility/string.h++
+ * architekton - string.h++
  * Simple string class using native character type.
  **/
 
@@ -31,9 +31,9 @@ THE SOFTWARE.
 #define ARCHITEKTON_STRING_H
 
 #include "architekton/global.h++"
-#include "architekton/types.h++"
 
-#include "architekton/utility/debug.h++"
+#include "architekton/debug.h++"
+#include "architekton/types.h++"
 
 #include <algorithm>
 #include <cstring>
@@ -44,9 +44,6 @@ THE SOFTWARE.
 #include <vector>
 
 namespace architekton
-{
-
-namespace utility
 {
 
 inline std::size_t strlen(const char* c_string)
@@ -78,8 +75,10 @@ public:
          const char_type* end)
   : data(begin, end)
   {
-    if(data.back() != '\0')
+    if(data.empty() || data.back() != '\0')
       data.push_back('\0');
+
+    //debug_print(debug::string, "string constructed: \'", &data[0], "\'.");
   }
 
   // constructable from plain (ASCII) C-string
@@ -118,7 +117,7 @@ public:
   string substr(size_type pos,
                 size_type count = npos) const;
   std::pair<string, string> split(string::char_type split,
-                                  string::size_type start = 0);
+                                  string::size_type start = 0) const;
 
   // find
   size_type find(char_type c,
@@ -159,8 +158,6 @@ inline string operator/(const char* lhs, const string& rhs)
 {
   return string(lhs) / rhs;
 }
-
-} // namespace utility
 
 } // namespace architekton
 

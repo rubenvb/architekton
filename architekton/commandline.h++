@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - utility/commandline.h++
+ * architekton - commandline.h++
  * Commandline handling machinery.
  **/
 
@@ -35,11 +35,11 @@ THE SOFTWARE.
 namespace architekton
 {
 struct options;
+class project;
 
-namespace utility
-{
 class string;
 
+// sets options and returns project ready to be loaded.
 void parse_commandline(int argc,
                        char* argv[],
                        options& options);
@@ -47,8 +47,6 @@ void parse_commandline(int argc,
 void set_option(const string& key,
                 const string& value,
                 options& options);
-
-} // namespace utility
 
 } // namespace architekton
 

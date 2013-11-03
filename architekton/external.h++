@@ -23,15 +23,17 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - external
+ * architekton - external.h++
  * External dependency.
  **/
 
 #ifndef ARCHITEKTON_EXTERNAL_H
 #define ARCHITEKTON_EXTERNAL_H
 
+#include "architekton/global.h++"
+
+#include "architekton/string.h++"
 #include "architekton/target.h++"
-#include "architekton/utility/string.h++"
 
 namespace architekton
 {
@@ -39,8 +41,9 @@ namespace architekton
 class external : public target
 {
 public:
-  external(const utility::string& name)
-  : target(name) {}
+  external(const string& name,
+           const architekton::options& options)
+  : target(name, options) {}
 };
 
 } // namespace architekton

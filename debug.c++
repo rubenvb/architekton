@@ -23,17 +23,19 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - utility.h++
- * architekton utilities (convenience header).
+ * architekton - debug.c++
+ * Definition of global debug_level.
  **/
 
-#ifndef ARCHITEKTON_UTILITY_H
-#define ARCHITEKTON_UTILITY_H
+#include "architekton/debug.h++"
 
-#include "architekton/utility/debug.h++"
-#include "architekton/utility/file.h++"
-#include "architekton/utility/make_unique.h++"
-#include "architekton/utility/print.h++"
-#include "architekton/utility/string.h++"
+namespace architekton
+{
+namespace debug
+{
 
-#endif // ARCHITEKTON_UTILITY_H
+debug level = everything;
+
+} // namespace debug
+
+} // namespace architekton
