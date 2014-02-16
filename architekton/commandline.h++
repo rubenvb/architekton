@@ -37,8 +37,6 @@ namespace architekton
 struct options;
 class project;
 
-class string;
-
 // sets options and returns project ready to be loaded.
 void parse_commandline(int argc,
                        char* argv[],

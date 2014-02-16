@@ -25,6 +25,7 @@ THE SOFTWARE.
 /**
  * architekton - string.h++
  * Simple string class using native character type.
+ * Maintains valid null-terminated c_str after all operations.
  **/
 
 #ifndef ARCHITEKTON_STRING_H
@@ -40,95 +41,223 @@ THE SOFTWARE.
 #ifdef _WIN32
 #include <cwchar>
 #endif
+#include <initializer_list>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
 namespace architekton
 {
+using char_type =
 #ifdef _WIN32
-using tstring = std::wstring;
+  wchar_t;
 #else
-using tstring = std::string;
+  char;
 #endif
 
-class string : public tstring
+template<typename Allocator = std::allocator<char_type> >
+class string : std::vector<char_type, Allocator>
 {
+  using dtype = std::vector<char_type, Allocator>;
 public:
   // types
-  using tstring::traits_type;
-  using tstring::value_type;
-  using tstring::allocator_type;
-  using tstring::size_type;
-  using tstring::difference_type;
-  using tstring::reference;
-  using tstring::const_reference;
-  using tstring::pointer;
-  using tstring::const_pointer;
-  using tstring::iterator;
-  using tstring::const_iterator;
-  using tstring::reverse_iterator;
-  using tstring::const_reverse_iterator;
+  using dtype::value_type;
+  using dtype::allocator_type;
+  using dtype::size_type;
+  using dtype::difference_type;
+  using dtype::reference;
+  using dtype::const_reference;
+  using dtype::pointer;
+  using dtype::const_pointer;
+  using dtype::iterator;
+  using dtype::const_iterator;
+  using dtype::reverse_iterator;
+  using dtype::const_reverse_iterator;
 
-  // constructors
-  using tstring::tstring;
 #ifdef _WIN32
-  // constructable from plain (ASCII) C-string
-  string(const char* c_string)
-  : tstring(c_string, c_string + std::strlen(c_string)+1) {}
+  // constructable from C-string, assumes ASCII
+  template<std::size_t N>
+  string(const char c_string[N])
+  : vector(c_string, c_string + N+1) {}
 #endif
 
   // Member functions
-  using tstring::operator=;
-  using tstring::assign;
-  using tstring::get_allocator;
+  void assign(const typename dtype::size_type count,
+              typename dtype::value_type value)
+  {
+    assign(count, value);
+    data.push_back('\0');
+  }
+  template<typename InputIt>
+  void assign(InputIt first,
+              InputIt last)
+  {
+    data.assign(first, last);
+    data.push_back('\0');
+  }
+  void assign(std::initializer_list<typename dtype::value_type> ilist)
+  {
+    data.assign(ilist);
+    data.push_back('\0');
+  }
+  using dtype::get_allocator();
 
   // Element access
-  using tstring::at;
-  using tstring::operator[];
-  using tstring::front;
-  using tstring::back;
-  using tstring::c_str;
-  using tstring::begin;
-  using tstring::cbegin;
-  using tstring::end;
-  using tstring::cend;
-  using tstring::rbegin;
-  using tstring::crbegin;
-  using tstring::rend;
-  using tstring::crend;
+  using dtype::at;
+  using dtype::operator[];
+  using dtype::front;
+  typename dtype::value_type& back()
+  {
+    return dtype::operator[](dtype::size()-2);
+  }
+  const typename dtype::value_type& back() const
+  {
+    return dtype::operator[](data.size()-2);
+  }
+  const typename dtype::value_type* c_str() const
+  {
+    return &dtype::operator[](0);
+  }
+  using dtype::begin;
+  using dtype::cbegin;
+  using dtype::end;
+  using dtype::cend;
+  using dtype::rbegin;
+  using dtype::crbegin;
+  using dtype::rend;
+  using dtype::crend;
 
   // Capacity
-  using tstring::empty;
-  using tstring::size;
-  using tstring::length;
-  using tstring::max_size;
-  using tstring::reserve;
-  using tstring::capacity;
-  using tstring::shrink_to_fit;
+  bool empty() const
+  {
+    return dtype::empty() || dtype::front() == '\0';
+  }
+  using dtype::size;
+  using dtype::max_size;
+  typename dtype::size_type length() const
+  {
+    return data.size()-1;
+  }
+  typename dtype::size_type max_length() const
+  {
+    return data.max_size()-1;
+  }
+  void reserve(typename dtype::size_type count)
+  {
+    data.reserve(count+1);
+  }
+  typename dtype::size_type capacity()
+  {
+    return data.capacity() - 1;
+  }
+  using dtype::shrink_to_fit;
 
   // Operations
-  using tstring::clear;
-  using tstring::insert;
-  using tstring::erase;
-  using tstring::push_back;
-  using tstring::pop_back;
-  using tstring::append;
-  using tstring::operator+=;
-  using tstring::compare;
-  using tstring::replace;
-  using tstring::substr;
-  using tstring::copy;
-  using tstring::resize;
-  using tstring::swap;
+  void clear()
+  {
+    data.clear();
+    data.push_back('\0');
+  }
+  using data_type::insert;
+  using data_type::erase;
+  void push_back(value_type value)
+  {
+    assert(data.back() == '\0');
+    data.pop_back();
+    data.push_back(value); //FIXME: might throw
+    data.push_back('\0');
+  }
+  value_type pop_back()
+  {
+    assert(data.back() == '\0');
+    const value_type result = data[data.size()-2];
+    data.pop_back(); // '\0'
+    data.pop_back(); // result
+    data.push_back('\0');
+    return result;
+  }
+  string& append(size_type count, const char_type value)
+  {
+    assert(data.back() == '\0');
+    data.pop_back(); // '\0'
+    data.resize(data.size()+count, value); //FIXME: might throw
+    data.push_back('\0');
+  }
+  string& append(const string& other_string)
+  {
+    assert(data.back() == '\0');
+    data.reserve(data.size() + other_string.size()-1);
+    data.pop_back('\0');
+    data.insert(std::end(data), std::begin(other_string), std::end(other_string));
+    return *this;
+  }
+  string& append(const string& other_string,
+                 size_type pos,
+                 size_type count)
+  {
+    return append(other_string.substr(pos, count))
+  }
+  template<typename InputIterator>
+  string& append(InputIterator first, InputIterator last)
+  {
+    assert(data.back() == '\0');
+    data.reserve(data.size() + std::distance(first, last));
+    data.pop_back(); // '\0'
+    data.insert(std::end(data), first, last);
+    data.push_back('\0');
+    return *this;
+  }
+
+  string& operator+=(const string& other_string)
+  {
+    return string.append(other_string);
+  }
+
+  // compare;
+  // replace;
+  string substr(size_type pos = 0,
+                size_type count = npos) const
+  {
+    if(pos > data.size())
+    if(count == npos)
+    {
+      return string(std::begin(data)+pos, std::end(data));
+    }
+    size_type end = pos+count;
+    assert(end <= data.size());
+    string result = string(std::begin(data)+pos, std::begin(data)+end);
+    result.push_back('\0)');
+    return result;
+  }
+  // copy;
+  void resize(size_type new_size,
+              value_type value = value_type())
+  {
+    data.resize(new_size, value);
+    data.back() = '\0';
+  }
 
   // Search
-  using tstring::find;
-  using tstring::rfind;
-  using tstring::find_first_of;
-  using tstring::find_first_not_of;
-  using tstring::find_last_of;
-  using tstring::find_last_not_of;
+  size_type find(const string& find_string,
+                 size_type pos = 0)
+  {
+    for(size_type index = 0; index < length() - find_string.length(); ++index)
+    {
+      //TODO
+    }
+    return npos;
+  }
+  size_type find(value_type value, size_type pos = 0)
+  {
+
+  }
+
+  // rfind;
+  // find_first_of;
+  // find_first_not_of;
+  // find_last_of;
+  // find_last_not_of;
 
   // Constants
   using tstring::npos;
@@ -138,7 +267,7 @@ public:
 
 // Operators
 architekton::string operator+(const architekton::string& lhs,
-                 const architekton::string& rhs)
+                              const architekton::string& rhs)
 {
   architekton::string result = lhs;
   return result.append(rhs);

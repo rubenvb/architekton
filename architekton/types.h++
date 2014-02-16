@@ -33,6 +33,7 @@ THE SOFTWARE.
 #define ARCHITEKTON_TYPEDEFS_H
 
 #include "architekton/global.h++"
+#include "architekton/string.h++"
 
 #include <memory>
 #include <set>
@@ -44,7 +45,6 @@ namespace architekton
 {
 
 struct file;
-class string;
 class target;
 
 using file_set = std::set<file>;
