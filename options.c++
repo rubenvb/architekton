@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2013 Ruben Van Boxem
+Copyright (c) 2014 Ruben Van Boxem
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,15 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - project.c++
- * Class implementation.
+ * architekton - options.c++
+ *
  **/
 
-#include "architekton/project.h++"
-
-#include "architekton/error.h++"
+#include "architekton/options.h++"
 
 namespace architekton
 {
-
-void project::load_project()
-{
-
-  throw error("project::load_project is unimplemented.");
+string_set options::architectures;
+string_set options::OSes;
+string_set options::toolchains;
 }
-
-} // namespace architekton

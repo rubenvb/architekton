@@ -38,39 +38,9 @@ THE SOFTWARE.
 namespace architekton
 {
 
-// unhardcode this shit
-enum class architecture
-{
-  x86,
-  AMD64,
-  ARM,
-  ARM64
-};
-
-enum class os
-{
-  Windows,
-  MacOSX,
-  Linux
-};
-
-enum class toolchain
-{
-  GNU,
-  LLVM,
-  Microsoft,
-  Intel
-};
-
 struct options
 {
-  void detect_environment(); // detect everything, big TODO.
-
-  string source_directory;
-  string main_project_file;
-
-  string_set targets_to_build;
-
+/*
   architecture build_architecture;
   os build_os;
   toolchain build_toolchain;
@@ -78,6 +48,16 @@ struct options
   architecture target_architecture;
   os target_os;
   toolchain target_toolchain;
+*/
+
+  string source_directory;
+  string main_project_file;
+
+  string_set targets_to_build;
+
+  static string_set architectures;
+  static string_set OSes;
+  static string_set toolchains;
 };
 
 } // namespace architekton

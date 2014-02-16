@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2013 Ruben Van Boxem
+Copyright (c) 2014 Ruben Van Boxem
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,27 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - project.c++
- * Class implementation.
+ * architekton - blueprint_loader.h++
+ * Parses *.blueprint.txt files which list (and describe):
+ *  - OS types,
+ *  - CPU architectures,
+ *  - Toolchains.
  **/
 
-#include "architekton/project.h++"
+#ifndef ARCHITEKTON_BLUEPRINT_LOADERS
+#define ARCHITEKTON_BLUEPRINT_LOADERS
 
-#include "architekton/error.h++"
+#include "architekton/global.h++"
+
+#include "architekton/types.h++"
 
 namespace architekton
 {
 
-void project::load_project()
-{
-
-  throw error("project::load_project is unimplemented.");
-}
+string_set load_architectures(const string& input);
+string_set load_OSes();
+string_set load_toolchains();
 
 } // namespace architekton
+
+#endif // ARCHITEKTON_BLUEPRINT_LOADERS

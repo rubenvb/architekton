@@ -27,12 +27,16 @@ THE SOFTWARE.
  * Main function with execution timing.
  **/
 
+#include "architekton/blueprint_loaders.h++"
 #include "architekton/commandline.h++"
 #include "architekton/error.h++"
 #include "architekton/options.h++"
 #include "architekton/project.h++"
 
 #include <chrono>
+#include <fstream>
+#include <streambuf>
+#include <ios>
 
 using namespace architekton;
 using namespace std::chrono;
@@ -46,6 +50,16 @@ int main(int argc, char* argv[])
     print("Architekton version ", version::major, ".", version::minor, " is building your software. Please stand by...\n");
 
     print("Starting build in \'", current_working_directory(), "\'.\n");
+
+    std::ifstream stream;
+    stream.open("M:\\Development\\Source\\architekton\\blueprints\\architectures.blueprint.txt", std::ios::in | std::ios::binary );
+    if(!stream)
+      throw error("cannot open file");
+
+
+    string architectures_blueprint;
+    std::copy(std::istream_iterator<char>(stream), std::istream_iterator<char>(), std::back_inserter(architectures_blueprint));
+    options::architectures = load_architectures(architectures_blueprint);
 
     options options;
     parse_commandline(argc, argv, options);

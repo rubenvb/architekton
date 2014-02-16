@@ -32,11 +32,6 @@ THE SOFTWARE.
 
 #include <cstdint>
 
-#ifdef _MSC_VER
-#undef constexpr
-#define constexpr const
-#endif
-
 namespace architekton
 {
 struct version
@@ -47,9 +42,5 @@ struct version
 };
 
 } // namespace architekton
-
-#ifdef _MSC_VER
-#undef constexpr
-#endif
 
 #endif // ARCHITEKTON_GLOBAL_H

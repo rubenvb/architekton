@@ -1,0 +1,148 @@
+#
+# toolchains blueprint file
+#
+############################
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2013 Ruben Van Boxem
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+
+toolchain LLVM
+{
+  language C
+  {
+    compiler          gcc
+    dynamic_linker    gcc
+    static_linker     ar
+    language_standard -std=[c89,gnu89,c90,gnu90,c99,gnu99,c11,gnu11]
+  }
+  language C++
+  {
+    compiler          g++
+    dynamic_linker    g++
+    static_linker     ar
+    language_standard -std=[c++98,gnu++98,c++03,gnu++03,c++11,gnu++11,c++14,gnu++14]
+  }
+  language Fortran
+  {
+    compiler          gfortran
+    dynamic_linker    gfortran
+    static_linker     ar
+    language_standard -std=[f95,f2003,f2008,gnu,legacy]
+  }
+  files
+  {
+    object_extension .o
+
+    static_library_prefix    lib
+    static_library_extension .a
+    shared_library_prefix    lib
+    import_library_extension .dll.a # only used on Windows
+  }
+  options
+  {
+    # nologo
+    define -D
+
+    include_directory -I
+    include_file      -include
+    include_sysfile   -sys-include
+
+    output_object         -o
+    output_pch            -o
+    # output_debug
+    output_import_library -Wl,--out-implib
+
+    compile_only  -c
+    compile_debug -g
+
+    optimize_debug   -Od
+    optimize_normal  -O2
+    optimize_size    -Os
+    optimize_extreme -O3
+    optimize_link    -flto
+    optimize_extra   [-fomit-frame-pointer,-momit-leaf-frame-pointer]
+
+    # link_debug
+    link_optimize    -flto
+    link_strip       -s
+    link_library     -l
+    link_directory   -L
+  }
+}
+
+toolchain LLVM
+{
+  language C
+  {
+    compiler          clang
+    dynamic_linker    clang
+    static_linker     ar
+    language_standard -std=[c89,gnu89,c90,gnu90,c99,gnu99,c11,gnu11]
+  }
+  language C++
+  {
+    compiler          clang++
+    dynamic_linker    clang++
+    static_linker     ar
+    language_standard -std=[c++98,gnu++98,c++03,gnu++03,c++11,gnu++11,c++14,gnu++14]
+  }
+  files
+  {
+    object_extension .o
+
+    static_library_prefix    lib
+    static_library_extension .a
+    shared_library_prefix    lib
+    import_library_extension .dll.a # only used on Windows
+  }
+  options
+  {
+    # nologo
+    define -D
+
+    include_directory -I
+    include_file      -include
+    include_sysfile   -sys-include
+
+    output_object         -o
+    output_pch            -o
+    # output_debug
+    output_import_library -Wl,--out-implib
+
+    compile_only  -c
+    compile_debug -g
+
+    optimize_debug   -Od
+    optimize_normal  -O2
+    optimize_size    -Os
+    optimize_extreme -O3
+    optimize_link    -flto
+    optimize_extra   [-fomit-frame-pointer,-momit-leaf-frame-pointer]
+
+    # link_debug
+    link_optimize    -flto
+    link_strip       -s
+    link_library     -l
+    link_directory   -L
+  }
+}

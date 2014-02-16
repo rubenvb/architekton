@@ -30,6 +30,8 @@ THE SOFTWARE.
 #include "architekton/debug.h++"
 #include "architekton/string.h++"
 
+#include <stdexcept>
+
 namespace architekton
 {
 
@@ -41,10 +43,7 @@ string string::substr(size_type pos,
     throw std::out_of_range("substr called for out of range blabla");
 
   if(count != npos)
-  {
-    const size_type end = pos+count == data.size() ? pos+count-1 : pos+count;
-    return string(&data[pos], &data[end]);
-  }
+    return string(&data[pos], &data[pos+count]);
   else
     return string(&data[pos], &data[data.size()-1]);
 }
@@ -92,7 +91,6 @@ string operator/(const string& left, const string& right)
   else
     result = left + "/" + right;
 
-  debug_print(debug::string, "Result: \'", result, "\'.");
   return result;
 }
 

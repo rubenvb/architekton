@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2013 Ruben Van Boxem
+Copyright (c) 2014 Ruben Van Boxem
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,51 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - project.c++
- * Class implementation.
+ * architekton - blueprint_loaders.c++
+ * Function implementations.
  **/
 
-#include "architekton/project.h++"
+#include "architekton/blueprint_loaders.h++"
 
-#include "architekton/error.h++"
+#include <istream>
+
+#include <boost/spirit/include/qi.hpp>
+  namespace spirit = boost::spirit;
+  namespace qi = spirit::qi;
+  using spirit::ascii::space;
+  using spirit::ascii::char_;
+  using qi::eol;
+  using qi::lit;
+
+#include "architekton/string.h++"
 
 namespace architekton
 {
 
-void project::load_project()
+string_set load_architectures(const string& input)
 {
+  string_set architectures;
 
-  throw error("project::load_project is unimplemented.");
+  const auto comment_skipper = space | '#' >> *(char_ - eol) >> eol;
+
+  const auto grammar = lit("architecture") >> *(char_) % eol;
+
+  qi::phrase_parse(std::begin(input), std::end(input), grammar, comment_skipper, architectures);
+  return architectures;
+}
+
+string_set load_OSes()
+{
+  string_set OSes;
+
+  return OSes;
+}
+
+string_set load_toolchains()
+{
+  string_set toolchains;
+
+  return toolchains;
 }
 
 } // namespace architekton

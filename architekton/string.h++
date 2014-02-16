@@ -40,117 +40,172 @@ THE SOFTWARE.
 #ifdef _WIN32
 #include <cwchar>
 #endif
+#include <string>
 #include <utility>
 #include <vector>
 
-#ifdef _MSC_VER
-#undef constexpr
-#define constexpr const
-#endif
-
 namespace architekton
 {
+#ifdef _WIN32
+using tstring = std::wstring;
+#else
+using tstring = std::string;
+#endif
 
-inline std::size_t strlen(const char* c_string)
-{
-  return std::strlen(c_string);
-}
-inline std::size_t strlen(const wchar_t* c_string)
-{
-  return std::wcslen(c_string);
-}
-
-class string
+class string : public tstring
 {
 public:
+  // types
+  using tstring::traits_type;
+  using tstring::value_type;
+  using tstring::allocator_type;
+  using tstring::size_type;
+  using tstring::difference_type;
+  using tstring::reference;
+  using tstring::const_reference;
+  using tstring::pointer;
+  using tstring::const_pointer;
+  using tstring::iterator;
+  using tstring::const_iterator;
+  using tstring::reverse_iterator;
+  using tstring::const_reverse_iterator;
+
+  // constructors
+  using tstring::tstring;
 #ifdef _WIN32
-  using char_type = wchar_t;
-  string(const wchar_t* c_string)
-  : data(c_string, c_string + strlen(c_string)+1) {}
-#else
-  using char_type = char;
-#endif
-  using size_type = std::vector<char_type>::size_type;
-  using iterator = std::vector<char_type>::iterator;
-  using const_iterator = std::vector<char_type>::const_iterator;
-
-  string(size_type size = 0)
-  : data(size) {}
-  string(const char_type* begin,
-         const char_type* end)
-  : data(begin, end)
-  {
-    if(data.empty() || data.back() != '\0')
-      data.push_back('\0');
-
-    //debug_print(debug::string, "string constructed: \'", &data[0], "\'.");
-  }
-
   // constructable from plain (ASCII) C-string
   string(const char* c_string)
-  : data(c_string, c_string + strlen(c_string)+1) {}
+  : tstring(c_string, c_string + std::strlen(c_string)+1) {}
+#endif
 
-  static constexpr size_type npos = static_cast<size_type>(-1);
+  // Member functions
+  using tstring::operator=;
+  using tstring::assign;
+  using tstring::get_allocator;
 
-  // iteration
-  const_iterator begin() const { return data.cbegin(); }
-  const_iterator end() const { return data.cend(); }
-  iterator begin() { return data.begin(); }
-  iterator end() { return data.end(); }
+  // Element access
+  using tstring::at;
+  using tstring::operator[];
+  using tstring::front;
+  using tstring::back;
+  using tstring::c_str;
+  using tstring::begin;
+  using tstring::cbegin;
+  using tstring::end;
+  using tstring::cend;
+  using tstring::rbegin;
+  using tstring::crbegin;
+  using tstring::rend;
+  using tstring::crend;
 
-  // raw C string
-  char_type* raw() { return &data[0]; }
-  const char_type* raw() const { return &data[0]; }
+  // Capacity
+  using tstring::empty;
+  using tstring::size;
+  using tstring::length;
+  using tstring::max_size;
+  using tstring::reserve;
+  using tstring::capacity;
+  using tstring::shrink_to_fit;
 
-  // size
-  size_type size() const { return data.size(); }
-  void reserve(const size_type N) { data.reserve(N); }
-  bool empty() const { return data.empty(); }
+  // Operations
+  using tstring::clear;
+  using tstring::insert;
+  using tstring::erase;
+  using tstring::push_back;
+  using tstring::pop_back;
+  using tstring::append;
+  using tstring::operator+=;
+  using tstring::compare;
+  using tstring::replace;
+  using tstring::substr;
+  using tstring::copy;
+  using tstring::resize;
+  using tstring::swap;
 
-  // element access
-  const char_type& operator[](size_type index) const { return data[index]; }
-  char_type& operator[](size_type index) { return data[index]; }
+  // Search
+  using tstring::find;
+  using tstring::rfind;
+  using tstring::find_first_of;
+  using tstring::find_first_not_of;
+  using tstring::find_last_of;
+  using tstring::find_last_not_of;
 
-  const char_type& back() const { return data[data.size()-1]; }
-  char_type& back() { return data[data.size()-1]; }
+  // Constants
+  using tstring::npos;
 
-  // comparison
-  bool operator==(const string& rhs) const { return data == rhs.data; }
-  bool operator<(const string& rhs) const { return data < rhs.data; }
-
-  // bits and parts
-  string substr(size_type pos,
-                size_type count = npos) const;
-  std::pair<string, string> split(string::char_type split,
-                                  string::size_type start = 0) const;
-
-  // find
-  size_type find(char_type c,
-                 size_type pos = 0) const;
-
-private:
-  std::vector<char_type> data;
+  friend string operator+(const string&, const string&);
 };
 
-// operator<< for stream output
-inline std::ostream& operator<<(std::ostream& os, const string& s)
+// Operators
+architekton::string operator+(const architekton::string& lhs,
+                 const architekton::string& rhs)
 {
-  return os << s.raw();
+  architekton::string result = lhs;
+  return result.append(rhs);
 }
-inline std::wostream& operator<<(std::wostream& os, const string& s)
+string operator+(const string::value_type* lhs,
+                 const string& rhs)
 {
-  return os << s.raw();
+  return string(lhs).append(rhs);
 }
+#ifdef _WIN32
+string operator+(const char* lhs,
+                 const string& rhs)
+{
+  return string(lhs).append(rhs.c_str());
+}
+#endif
+string operator+(const string::value_type lhs,
+                 const string& rhs)
+{
+  return string(1, lhs).append(rhs);
+}
+#ifdef _WIN32
+string operator+(const char lhs,
+                 const string& rhs)
+{
+  return string(1, lhs).append(rhs);
+}
+#endif
 
-// Operator+ for string concatenation
-string operator+(const string& lhs, const string& rhs);
-inline string operator+(const string& lhs, const char* rhs)
+string operator+(const string& lhs,
+                 const string::value_type* rhs)
 {
-  return lhs + string(rhs);
+  return lhs.append(rhs);
 }
-inline string operator+(const char* lhs, const string& rhs)
+#ifdef _WIN32
+string operator+(const string& lhs,
+                 const char* rhs)
 {
-  return string(lhs) + rhs;
+  return lhs.appens(string(rhs));
+}
+#endif
+string operator+(const string& lhs,
+                 const string::value_type rhs)
+{
+  return lhs.append(string(1, rhs));
+}
+#ifdef _WIN32
+string operator+(const string& lhs,
+                 const char rhs)
+{
+  return lhs.append(string(1, rhs));
+}
+#endif
+string operator+(const string&& lhs,
+                 const string& rhs)
+{
+  return lhs.append(rhs);
+}
+string operator+(const string& lhs,
+                 const string&& rhs)
+{
+  return lhs.append(rhs);
+}
+string operator+(const string&& lhs,
+                 const string&& rhs)
+{
+  return lhs.append(rhs);
 }
 
 // operator/ for directory concatenation
@@ -164,10 +219,32 @@ inline string operator/(const char* lhs, const string& rhs)
   return string(lhs) / rhs;
 }
 
-#ifdef _MSC_VER
-#undef constexpr
-#endif
-
 } // namespace architekton
+
+// specialize for Boost.Spirit:
+// http://www.boost.org/doc/libs/1_55_0/libs/spirit/doc/html/spirit/qi/reference/basics.html#spirit.qi.reference.basics.string
+// Example: http://www.boost.org/doc/libs/1_55_0/libs/spirit/example/qi/custom_string.cpp
+
+#include <boost/spirit/include/support_string_traits.hpp>
+
+namespace boost { namespace spirit { namespace traits
+{
+// Make Qi recognize architekton::string as a container
+template<> struct is_container<architekton::string> : mpl::true_ {};
+
+// Expose the container's (architekton::string's) char_type
+template<> struct container_value<architekton::string> : mpl::identity<architekton::string::value_type> {};
+
+// Define how to insert a new element at the end of the container (architekton::string)
+template<>
+struct push_back_container<architekton::string, architekton::string::value_type>
+{
+  static bool call(architekton::string& c, architekton::string::value_type const& val)
+  {
+    c.push_back(val);
+    return true;
+  }
+};
+}}}
 
 #endif // ARCHITEKTON_STRING_H
