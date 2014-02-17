@@ -57,23 +57,23 @@ using char_type =
 #endif
 
 template<typename Allocator = std::allocator<char_type> >
-class string : std::vector<char_type, Allocator>
+class string : private std::vector<char_type, Allocator>
 {
   using dtype = std::vector<char_type, Allocator>;
 public:
   // types
-  using dtype::value_type;
-  using dtype::allocator_type;
-  using dtype::size_type;
-  using dtype::difference_type;
-  using dtype::reference;
-  using dtype::const_reference;
-  using dtype::pointer;
-  using dtype::const_pointer;
-  using dtype::iterator;
-  using dtype::const_iterator;
-  using dtype::reverse_iterator;
-  using dtype::const_reverse_iterator;
+  using value_type = typename dtype::value_type;
+  using allocator_type = typename dtype::allocator_type;
+  using size_type = typename dtype::size_type;
+  using difference_type = typename dtype::difference_type;
+  using reference = typename dtype::reference;
+  using const_reference = typename dtype::const_reference;
+  using pointer = typename dtype::pointer;
+  using const_pointer = typename dtype::const_pointer;
+  using iterator = typename dtype::iterator;
+  using const_iterator = typename dtype::const_iterator;
+  using reverse_iterator = typename dtype::reverse_iterator;
+  using const_reverse_iterator = typename dtype::const_reverse_iterator;
 
 #ifdef _WIN32
   // constructable from C-string, assumes ASCII
@@ -83,41 +83,41 @@ public:
 #endif
 
   // Member functions
-  void assign(const typename dtype::size_type count,
-              typename dtype::value_type value)
+  void assign(const size_type count,
+              value_type value)
   {
     assign(count, value);
-    data.push_back('\0');
+    dtype::push_back('\0');
   }
-  template<typename InputIt>
-  void assign(InputIt first,
-              InputIt last)
+  template<typename InputIterator>
+  void assign(InputIterator first,
+              InputIterator last)
   {
-    data.assign(first, last);
-    data.push_back('\0');
+    dtype::assign(first, last);
+    dtype::push_back('\0');
   }
-  void assign(std::initializer_list<typename dtype::value_type> ilist)
+  void assign(std::initializer_list<value_type> ilist)
   {
-    data.assign(ilist);
-    data.push_back('\0');
+    dtype::assign(ilist);
+    dtype::push_back('\0');
   }
-  using dtype::get_allocator();
+  using dtype::get_allocator;
 
   // Element access
   using dtype::at;
   using dtype::operator[];
   using dtype::front;
-  typename dtype::value_type& back()
+  value_type& back()
   {
-    return dtype::operator[](dtype::size()-2);
+    return operator[](size()-2);
   }
   const typename dtype::value_type& back() const
   {
-    return dtype::operator[](data.size()-2);
+    return operator[](size()-2);
   }
   const typename dtype::value_type* c_str() const
   {
-    return &dtype::operator[](0);
+    return &operator[](0);
   }
   using dtype::begin;
   using dtype::cbegin;
@@ -131,87 +131,87 @@ public:
   // Capacity
   bool empty() const
   {
-    return dtype::empty() || dtype::front() == '\0';
+    return empty() || front() == '\0';
   }
   using dtype::size;
   using dtype::max_size;
-  typename dtype::size_type length() const
+  size_type length() const
   {
-    return data.size()-1;
+    return size()-1;
   }
-  typename dtype::size_type max_length() const
+  size_type max_length() const
   {
-    return data.max_size()-1;
+    return max_size()-1;
   }
-  void reserve(typename dtype::size_type count)
+  void reserve(size_type count)
   {
-    data.reserve(count+1);
+    dtype::reserve(count+1);
   }
-  typename dtype::size_type capacity()
+  size_type capacity()
   {
-    return data.capacity() - 1;
+    return dtype::capacity() - 1;
   }
   using dtype::shrink_to_fit;
 
   // Operations
   void clear()
   {
-    data.clear();
-    data.push_back('\0');
+    dtype::clear();
+    dtype::push_back('\0');
   }
-  using data_type::insert;
-  using data_type::erase;
+  using dtype::insert;
+  using dtype::erase;
   void push_back(value_type value)
   {
-    assert(data.back() == '\0');
-    data.pop_back();
-    data.push_back(value); //FIXME: might throw
-    data.push_back('\0');
+    assert(dtype::back() == '\0');
+    dtype::push_back(value);
+    std::swap(dtype::operator[](size()-2), dtype::back());
   }
   value_type pop_back()
   {
-    assert(data.back() == '\0');
-    const value_type result = data[data.size()-2];
-    data.pop_back(); // '\0'
-    data.pop_back(); // result
-    data.push_back('\0');
+    assert(dtype::back() == '\0');
+    value_type result;
+
+    std::swap(dtype::operator[](size()-2), dtype::back());
+    std::swap(dtype::back(), result);
+
     return result;
   }
   string& append(size_type count, const char_type value)
   {
-    assert(data.back() == '\0');
-    data.pop_back(); // '\0'
-    data.resize(data.size()+count, value); //FIXME: might throw
-    data.push_back('\0');
+    assert(dtype::back() == '\0');
+    resize(size()+count, value); // leaves '\0' at new size()-count
+    std::swap(operator[](size()-count), dtype::back()); // place '\0' at end
   }
   string& append(const string& other_string)
   {
-    assert(data.back() == '\0');
-    data.reserve(data.size() + other_string.size()-1);
-    data.pop_back('\0');
-    data.insert(std::end(data), std::begin(other_string), std::end(other_string));
+    assert(dtype::back() == '\0');
+    dtype::reserve(size() + other_string.size()-1);
+    dtype::insert(end()-1, std::begin(other_string), std::end(other_string));
     return *this;
   }
   string& append(const string& other_string,
                  size_type pos,
                  size_type count)
   {
-    return append(other_string.substr(pos, count))
+    return append(other_string.substr(pos, count));
   }
   template<typename InputIterator>
   string& append(InputIterator first, InputIterator last)
   {
-    assert(data.back() == '\0');
-    data.reserve(data.size() + std::distance(first, last));
-    data.pop_back(); // '\0'
-    data.insert(std::end(data), first, last);
-    data.push_back('\0');
+    assert(dtype::back() == '\0');
+    dtype::reserve(size() + std::distance(first, last));
+    dtype::insert(end()-1, first, last);
+
+    if(dtype::back() != '\0')
+      dtype::push_back('\0');
+
     return *this;
   }
 
   string& operator+=(const string& other_string)
   {
-    return string.append(other_string);
+    return append(other_string);
   }
 
   // compare;
@@ -219,23 +219,24 @@ public:
   string substr(size_type pos = 0,
                 size_type count = npos) const
   {
-    if(pos > data.size())
+    if(pos > size())
     if(count == npos)
     {
-      return string(std::begin(data)+pos, std::end(data));
+      return string(begin() + pos, end());
     }
     size_type end = pos+count;
-    assert(end <= data.size());
-    string result = string(std::begin(data)+pos, std::begin(data)+end);
-    result.push_back('\0)');
+    assert(end <= size());
+    string result = string(begin() + pos, begin()+end);
+
     return result;
   }
   // copy;
   void resize(size_type new_size,
               value_type value = value_type())
   {
-    data.resize(new_size, value);
-    data.back() = '\0';
+    const size_type old_size = size();
+    dtype::resize(new_size, value);
+    std::swap(dtype::operator[](old_size), dtype::back());
   }
 
   // Search
@@ -250,7 +251,8 @@ public:
   }
   size_type find(value_type value, size_type pos = 0)
   {
-
+    //TODO
+    return npos;
   }
 
   // rfind;
@@ -260,9 +262,7 @@ public:
   // find_last_not_of;
 
   // Constants
-  using tstring::npos;
-
-  friend string operator+(const string&, const string&);
+  static const constexpr size_type npos = -1;
 };
 
 // Operators
