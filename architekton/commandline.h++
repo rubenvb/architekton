@@ -32,6 +32,8 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
+#include "architekton/string.h++"
+
 namespace architekton
 {
 struct options;

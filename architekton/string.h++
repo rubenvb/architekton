@@ -33,8 +33,7 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-#include "architekton/debug.h++"
-#include "architekton/types.h++"
+#include "architekton/assert.h++"
 
 #include <algorithm>
 #include <cstring>
@@ -82,17 +81,13 @@ public:
   using reverse_iterator = typename dtype::reverse_iterator;
   using const_reverse_iterator = typename dtype::const_reverse_iterator;
 
-
-  //template<std::size_t N>
-  string_impl(const value_type* c_string)
-  : std::vector<value_type, Allocator>(c_string, c_string + std::strlen(c_string)+1)
+  string_impl() : std::vector<value_type, Allocator>(1, '\0')
   {}
-#ifdef _WIN32
-  // constructable from C-string, assumes ASCII
+  // C char array constructor
   template<std::size_t N>
-  string_impl<value_type, Allocator>(const char c_string[N])
-  : std::vector(c_string, c_string + N+1) {}
-#endif
+  string_impl(const char (&c_string)[N])
+  : std::vector<value_type, Allocator>(c_string, c_string + N+1)
+  {}
 
   // Member functions
   void assign(const size_type count,
@@ -273,6 +268,8 @@ public:
   // find_last_of;
   // find_last_not_of;
 
+  std::pair<string_impl, string_impl> split(value_type value) const;
+
   // Constants
   static const constexpr size_type npos = -1;
 };
@@ -282,13 +279,13 @@ using string = string_impl<>;
 // Operators
 template<typename Allocator>
 string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
-                            const string_impl<Allocator>& rhs)
+                                 const string_impl<Allocator>& rhs)
 {
   string_impl<Allocator> result = lhs;
   return result.append(rhs);
 }
 template<typename Allocator>
-string_impl<Allocator> operator+(const typename string_impl<Allocator>::value_type* lhs,
+string_impl<Allocator> operator+(const char_type* lhs,
                                  const string_impl<Allocator>& rhs)
 {
   return string_impl<Allocator>(lhs).append(rhs);
@@ -302,7 +299,7 @@ string_impl<Allocator> operator+(const char* lhs,
 }
 #endif
 template<typename Allocator>
-string_impl<Allocator> operator+(const typename string_impl<Allocator>::value_type lhs,
+string_impl<Allocator> operator+(char_type lhs,
                                  const string_impl<Allocator>& rhs)
 {
   return string_impl<Allocator>(1, lhs).append(rhs);
@@ -332,7 +329,7 @@ string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
 #endif
 template<typename Allocator>
 string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
-                                 const typename string_impl<Allocator>::value_type rhs)
+                                 char_type rhs)
 {
   return lhs.append(string_impl<Allocator>(1, rhs));
 }
@@ -368,7 +365,8 @@ template<typename Allocator>
 string_impl<Allocator> operator/(const string_impl<Allocator>& lhs,
                                  const string_impl<Allocator>& rhs);
 template<typename Allocator>
-inline string_impl<Allocator> operator/(const string_impl<Allocator>& lhs, const char* rhs)
+inline string_impl<Allocator> operator/(const string_impl<Allocator>& lhs,
+                                        const char* rhs)
 {
   return lhs / string_impl<Allocator>(rhs);
 }
@@ -383,7 +381,42 @@ template<typename Allocator>
 bool operator<(const string_impl<Allocator>& lhs,
                const string_impl<Allocator>& rhs)
 {
-  return strcmp(lhs.c_str(), rhs.c_str());
+  return strcmp(lhs.c_str(), rhs.c_str()) < 0;
+}
+template<typename Allocator>
+bool operator==(const string_impl<Allocator>& lhs,
+                const string_impl<Allocator>& rhs)
+{
+  return strcmp(lhs.c_str(), rhs.c_str()) == 0;
+}
+template<typename Allocator>
+bool operator!=(const string_impl<Allocator>& lhs,
+                const string_impl<Allocator>& rhs)
+{
+  return !(lhs == rhs);
+}
+//...
+
+// Output streaming
+template<typename Allocator>
+std::ostream& operator<<(std::ostream& os, const string_impl<Allocator>& s)
+{
+  return os << s.c_str();
+}
+template<typename Allocator>
+std::wostream& operator<<(std::wostream& os, const string_impl<Allocator>& s)
+{
+  return os << s.c_str();
+}
+
+// split
+template<typename Allocator>
+std::pair<string_impl<Allocator>, string_impl<Allocator>>
+split(const string_impl<Allocator>& s,
+      char_type split_char = ' ',
+      typename string_impl<Allocator>::size_type start = 0)
+{
+  return { "", "" };
 }
 
 } // namespace architekton
@@ -403,15 +436,15 @@ struct is_container<architekton::string_impl<Allocator>> : mpl::true_ {};
 // Expose the container's (architekton::string's) char_type
 template<typename Allocator>
 struct container_value<architekton::string_impl<Allocator>>
-  : mpl::identity<typename architekton::string_impl<Allocator>::value_type> {};
+  : mpl::identity<architekton::char_type> {};
 
 // Define how to insert a new element at the end of the container (architekton::string)
 template<typename Allocator>
 struct push_back_container<architekton::string_impl<Allocator>,
-                           typename architekton::string_impl<Allocator>::value_type>
+                           architekton::char_type>
 {
   static bool call(architekton::string_impl<Allocator>& c,
-                   typename architekton::string_impl<Allocator>::value_type const& val)
+                   architekton::char_type const& val)
   {
     c.push_back(val);
     return true;

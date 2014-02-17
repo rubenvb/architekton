@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include "architekton/commandline.h++"
 #include "architekton/error.h++"
 #include "architekton/options.h++"
+#include "architekton/print.h++"
 #include "architekton/project.h++"
 
 #include <chrono>

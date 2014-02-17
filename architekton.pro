@@ -82,4 +82,5 @@ HEADERS += \
     architekton/file.h++ \
     architekton/debug.h++ \
     architekton/types.h++ \
-    architekton/blueprint_loaders.h++
+    architekton/blueprint_loaders.h++ \
+    architekton/assert.h++

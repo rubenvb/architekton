@@ -62,12 +62,12 @@ void parse_commandline(int argc,
     {
       if(arg[1] == '-') // arguments should never be empty (min. length 2)
       {
-        const auto key_value = arg.split(2, '=');
+        const auto key_value = split(arg, '=', 2);
         debug_print(debug::commandline, "Project argument (-key[=value]): key=\'", key_value.first, "\'', value=\'", key_value.second, "\'.");
       }
       else
       {
-        const auto key_value = arg.split(1, '=');
+        const auto key_value = split(arg, '=', 1);
         set_option(key_value.first, key_value.second, options);
       }
     }
