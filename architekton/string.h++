@@ -57,7 +57,7 @@ using char_type =
 #endif
 
 template<typename Allocator = std::allocator<char_type> >
-class string : private std::vector<char_type, Allocator>
+class string_impl : private std::vector<char_type, Allocator>
 {
   using dtype = std::vector<char_type, Allocator>;
 public:
@@ -75,11 +75,16 @@ public:
   using reverse_iterator = typename dtype::reverse_iterator;
   using const_reverse_iterator = typename dtype::const_reverse_iterator;
 
+
+  //template<std::size_t N>
+  string_impl(const value_type* c_string)
+  : std::vector<value_type, Allocator>(c_string, c_string + std::strlen(c_string)+1)
+  {}
 #ifdef _WIN32
   // constructable from C-string, assumes ASCII
   template<std::size_t N>
-  string(const char c_string[N])
-  : vector(c_string, c_string + N+1) {}
+  string_impl<value_type, Allocator>(const char c_string[N])
+  : std::vector(c_string, c_string + N+1) {}
 #endif
 
   // Member functions
@@ -177,27 +182,27 @@ public:
 
     return result;
   }
-  string& append(size_type count, const char_type value)
+  string_impl& append(size_type count, const char_type value)
   {
     assert(dtype::back() == '\0');
     resize(size()+count, value); // leaves '\0' at new size()-count
     std::swap(operator[](size()-count), dtype::back()); // place '\0' at end
   }
-  string& append(const string& other_string)
+  string_impl& append(const string_impl& other_string)
   {
     assert(dtype::back() == '\0');
     dtype::reserve(size() + other_string.size()-1);
     dtype::insert(end()-1, std::begin(other_string), std::end(other_string));
     return *this;
   }
-  string& append(const string& other_string,
-                 size_type pos,
-                 size_type count)
+  string_impl& append(const string_impl& other_string,
+                      size_type pos,
+                      size_type count)
   {
     return append(other_string.substr(pos, count));
   }
   template<typename InputIterator>
-  string& append(InputIterator first, InputIterator last)
+  string_impl& append(InputIterator first, InputIterator last)
   {
     assert(dtype::back() == '\0');
     dtype::reserve(size() + std::distance(first, last));
@@ -209,24 +214,24 @@ public:
     return *this;
   }
 
-  string& operator+=(const string& other_string)
+  string_impl& operator+=(const string_impl& other_string)
   {
     return append(other_string);
   }
 
   // compare;
   // replace;
-  string substr(size_type pos = 0,
+  string_impl substr(size_type pos = 0,
                 size_type count = npos) const
   {
     if(pos > size())
     if(count == npos)
     {
-      return string(begin() + pos, end());
+      return string_impl(begin() + pos, end());
     }
     size_type end = pos+count;
     assert(end <= size());
-    string result = string(begin() + pos, begin()+end);
+    string_impl result = string_impl(begin() + pos, begin()+end);
 
     return result;
   }
@@ -240,7 +245,7 @@ public:
   }
 
   // Search
-  size_type find(const string& find_string,
+  size_type find(const string_impl& find_string,
                  size_type pos = 0)
   {
     for(size_type index = 0; index < length() - find_string.length(); ++index)
@@ -265,87 +270,106 @@ public:
   static const constexpr size_type npos = -1;
 };
 
+using string = string_impl<>;
+
 // Operators
-architekton::string operator+(const architekton::string& lhs,
-                              const architekton::string& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
+                            const string_impl<Allocator>& rhs)
 {
-  architekton::string result = lhs;
+  string_impl<Allocator> result = lhs;
   return result.append(rhs);
 }
-string operator+(const string::value_type* lhs,
-                 const string& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const typename string_impl<Allocator>::value_type* lhs,
+                                 const string_impl<Allocator>& rhs)
 {
-  return string(lhs).append(rhs);
+  return string_impl<Allocator>(lhs).append(rhs);
 }
 #ifdef _WIN32
-string operator+(const char* lhs,
-                 const string& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const char* lhs,
+                                 const string_impl<Allocator>& rhs)
 {
-  return string(lhs).append(rhs.c_str());
+  return string_impl<Allocator>(lhs).append(rhs.c_str());
 }
 #endif
-string operator+(const string::value_type lhs,
-                 const string& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const typename string_impl<Allocator>::value_type lhs,
+                                 const string_impl<Allocator>& rhs)
 {
-  return string(1, lhs).append(rhs);
+  return string_impl<Allocator>(1, lhs).append(rhs);
 }
 #ifdef _WIN32
-string operator+(const char lhs,
-                 const string& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const char lhs,
+                                 const string_impl<Allocator>& rhs)
 {
-  return string(1, lhs).append(rhs);
+  return string_impl<Allocator>(1, lhs).append(rhs);
 }
 #endif
 
-string operator+(const string& lhs,
-                 const string::value_type* rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
+                                 const typename string_impl<Allocator>::value_type* rhs)
 {
   return lhs.append(rhs);
 }
 #ifdef _WIN32
-string operator+(const string& lhs,
-                 const char* rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
+                                 const char* rhs)
 {
-  return lhs.appens(string(rhs));
+  return lhs.append(string_impl<Allocator>(rhs));
 }
 #endif
-string operator+(const string& lhs,
-                 const string::value_type rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
+                                 const typename string_impl<Allocator>::value_type rhs)
 {
-  return lhs.append(string(1, rhs));
+  return lhs.append(string_impl<Allocator>(1, rhs));
 }
 #ifdef _WIN32
-string operator+(const string& lhs,
-                 const char rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
+                                 const char rhs)
 {
-  return lhs.append(string(1, rhs));
+  return lhs.append(string_impl<Allocator>(1, rhs));
 }
 #endif
-string operator+(const string&& lhs,
-                 const string& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>&& lhs,
+                                 const string_impl<Allocator>& rhs)
 {
   return lhs.append(rhs);
 }
-string operator+(const string& lhs,
-                 const string&& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
+                                 const string_impl<Allocator>&& rhs)
 {
   return lhs.append(rhs);
 }
-string operator+(const string&& lhs,
-                 const string&& rhs)
+template<typename Allocator>
+string_impl<Allocator> operator+(const string_impl<Allocator>&& lhs,
+                                 const string_impl<Allocator>&& rhs)
 {
   return lhs.append(rhs);
 }
 
 // operator/ for directory concatenation
-string operator/(const string& lhs, const string& rhs);
-inline string operator/(const string& lhs, const char* rhs)
+template<typename Allocator>
+string_impl<Allocator> operator/(const string_impl<Allocator>& lhs,
+                                 const string_impl<Allocator>& rhs);
+template<typename Allocator>
+inline string_impl<Allocator> operator/(const string_impl<Allocator>& lhs, const char* rhs)
 {
-  return lhs / string(rhs);
+  return lhs / string_impl<Allocator>(rhs);
 }
-inline string operator/(const char* lhs, const string& rhs)
+template<typename Allocator>
+inline string_impl<Allocator> operator/(const char* lhs,
+                                        const string_impl<Allocator>& rhs)
 {
-  return string(lhs) / rhs;
+  return string_impl<Allocator>(lhs) / rhs;
 }
 
 } // namespace architekton
@@ -359,16 +383,21 @@ inline string operator/(const char* lhs, const string& rhs)
 namespace boost { namespace spirit { namespace traits
 {
 // Make Qi recognize architekton::string as a container
-template<> struct is_container<architekton::string> : mpl::true_ {};
+template<typename Allocator>
+struct is_container<architekton::string_impl<Allocator>> : mpl::true_ {};
 
 // Expose the container's (architekton::string's) char_type
-template<> struct container_value<architekton::string> : mpl::identity<architekton::string::value_type> {};
+template<typename Allocator>
+struct container_value<architekton::string_impl<Allocator>>
+  : mpl::identity<typename architekton::string_impl<Allocator>::value_type> {};
 
 // Define how to insert a new element at the end of the container (architekton::string)
-template<>
-struct push_back_container<architekton::string, architekton::string::value_type>
+template<typename Allocator>
+struct push_back_container<architekton::string_impl<Allocator>,
+                           typename architekton::string_impl<Allocator>::value_type>
 {
-  static bool call(architekton::string& c, architekton::string::value_type const& val)
+  static bool call(architekton::string_impl<Allocator>& c,
+                   typename architekton::string_impl<Allocator>::value_type const& val)
   {
     c.push_back(val);
     return true;
