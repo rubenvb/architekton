@@ -49,11 +49,18 @@ THE SOFTWARE.
 
 namespace architekton
 {
-using char_type =
 #ifdef _WIN32
-  wchar_t;
+using char_type = wchar_t;
+inline int strcmp(const wchar_t* lhs, const wchar_t* rhs)
+{
+  return std::wcscmp(lhs, rhs);
+}
 #else
-  char;
+using char_type = char;
+inline int strcmp(const char* lhs, const char* rhs)
+{
+  return std::strcmp(lhs, rhs);
+}
 #endif
 
 template<typename Allocator = std::allocator<char_type> >
@@ -370,6 +377,13 @@ inline string_impl<Allocator> operator/(const char* lhs,
                                         const string_impl<Allocator>& rhs)
 {
   return string_impl<Allocator>(lhs) / rhs;
+}
+
+template<typename Allocator>
+bool operator<(const string_impl<Allocator>& lhs,
+               const string_impl<Allocator>& rhs)
+{
+  return strcmp(lhs.c_str(), rhs.c_str());
 }
 
 } // namespace architekton
