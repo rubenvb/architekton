@@ -54,13 +54,21 @@ inline int strcmp(const wchar_t* lhs, const wchar_t* rhs)
 {
   return std::wcscmp(lhs, rhs);
 }
+inline size_t strlen(const wchar_t* c_string)
+{
+  return std::wcslen(c_string);
+}
 #else
 using char_type = char;
+#endif
 inline int strcmp(const char* lhs, const char* rhs)
 {
   return std::strcmp(lhs, rhs);
 }
-#endif
+inline size_t strlen(const char* c_string)
+{
+  return std::strlen(c_string);
+}
 
 template<typename Allocator = std::allocator<char_type> >
 class string_impl : private std::vector<char_type, Allocator>
@@ -81,13 +89,27 @@ public:
   using reverse_iterator = typename dtype::reverse_iterator;
   using const_reverse_iterator = typename dtype::const_reverse_iterator;
 
-  string_impl() : std::vector<value_type, Allocator>(1, '\0')
+  string_impl(size_type length = 0)
+  : std::vector<value_type, Allocator>(length+1, '\0')
   {}
-  // C char array constructor
+  template<typename InputIterator>
+  string_impl(InputIterator begin,
+              InputIterator end)
+  : std::vector<value_type, Allocator>(begin, end)
+  {}
+  // C string constructor
   template<std::size_t N>
   string_impl(const char (&c_string)[N])
   : std::vector<value_type, Allocator>(c_string, c_string + N+1)
   {}
+  string_impl(const value_type* c_string)
+  : std::vector<value_type, Allocator>(c_string, c_string + strlen(c_string)+1)
+  {}
+#ifdef _WIN32
+  string_impl(const char* c_string)
+  : std::vector<value_type, Allocator>(c_string, c_string + strlen(c_string)+1)
+  {}
+#endif
 
   // Member functions
   void assign(const size_type count,
@@ -118,14 +140,19 @@ public:
   {
     return operator[](size()-2);
   }
-  const typename dtype::value_type& back() const
+  const value_type& back() const
   {
     return operator[](size()-2);
   }
-  const typename dtype::value_type* c_str() const
+  const value_type* c_str() const
   {
     return &operator[](0);
   }
+  value_type* c_str()
+  {
+    return &operator[](0);
+  }
+
   using dtype::begin;
   using dtype::cbegin;
   using dtype::end;
@@ -138,7 +165,7 @@ public:
   // Capacity
   bool empty() const
   {
-    return empty() || front() == '\0';
+    return dtype::empty() || front() == '\0';
   }
   using dtype::size;
   using dtype::max_size;
@@ -248,7 +275,7 @@ public:
 
   // Search
   size_type find(const string_impl& find_string,
-                 size_type pos = 0)
+                 size_type pos = 0) const
   {
     for(size_type index = 0; index < length() - find_string.length(); ++index)
     {
@@ -256,10 +283,13 @@ public:
     }
     return npos;
   }
-  size_type find(value_type value, size_type pos = 0)
+  size_type find(value_type value, size_type pos = 0) const
   {
-    //TODO
-    return npos;
+    auto result = std::find(begin() + pos, end(), value);
+    if(result != end())
+      return std::distance(begin(), result);
+    else
+      return npos;
   }
 
   // rfind;
@@ -267,8 +297,6 @@ public:
   // find_first_not_of;
   // find_last_of;
   // find_last_not_of;
-
-  std::pair<string_impl, string_impl> split(value_type value) const;
 
   // Constants
   static const constexpr size_type npos = -1;
@@ -295,7 +323,7 @@ template<typename Allocator>
 string_impl<Allocator> operator+(const char* lhs,
                                  const string_impl<Allocator>& rhs)
 {
-  return string_impl<Allocator>(lhs).append(rhs.c_str());
+  return string_impl<Allocator>(lhs).append(rhs);
 }
 #endif
 template<typename Allocator>
@@ -321,7 +349,7 @@ string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
 }
 #ifdef _WIN32
 template<typename Allocator>
-string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
+string_impl<Allocator> operator+(string_impl<Allocator> lhs,
                                  const char* rhs)
 {
   return lhs.append(string_impl<Allocator>(rhs));
@@ -345,7 +373,7 @@ template<typename Allocator>
 string_impl<Allocator> operator+(const string_impl<Allocator>&& lhs,
                                  const string_impl<Allocator>& rhs)
 {
-  return lhs.append(rhs);
+  return lhs + rhs;
 }
 template<typename Allocator>
 string_impl<Allocator> operator+(const string_impl<Allocator>& lhs,
@@ -362,8 +390,21 @@ string_impl<Allocator> operator+(const string_impl<Allocator>&& lhs,
 
 // operator/ for directory concatenation
 template<typename Allocator>
-string_impl<Allocator> operator/(const string_impl<Allocator>& lhs,
-                                 const string_impl<Allocator>& rhs);
+string_impl<Allocator> operator/(const string_impl<Allocator>& left,
+                                 const string_impl<Allocator>& right)
+{
+  string_impl<Allocator> result;
+  if(left.empty())
+    result = right;
+  else if(right.empty())
+    result = left;
+  else if('/' == left.back())
+    result = left.substr(0,left.size()-2) + "/" + right;
+  else
+    result = left + "/" + right;
+
+  return result;
+}
 template<typename Allocator>
 inline string_impl<Allocator> operator/(const string_impl<Allocator>& lhs,
                                         const char* rhs)
@@ -390,6 +431,18 @@ bool operator==(const string_impl<Allocator>& lhs,
   return strcmp(lhs.c_str(), rhs.c_str()) == 0;
 }
 template<typename Allocator>
+bool operator==(const char* c_string,
+                const string_impl<Allocator>& rhs)
+{
+  return strcmp(string_impl<Allocator>(c_string).c_str(), rhs.c_str()) == 0;
+}
+template<typename Allocator>
+bool operator==(const string_impl<Allocator>& lhs,
+                const char* c_string)
+{
+  return strcmp(lhs.c_str(), string_impl<Allocator>(c_string).c_str()) == 0;
+}
+template<typename Allocator>
 bool operator!=(const string_impl<Allocator>& lhs,
                 const string_impl<Allocator>& rhs)
 {
@@ -413,10 +466,11 @@ std::wostream& operator<<(std::wostream& os, const string_impl<Allocator>& s)
 template<typename Allocator>
 std::pair<string_impl<Allocator>, string_impl<Allocator>>
 split(const string_impl<Allocator>& s,
-      char_type split_char = ' ',
-      typename string_impl<Allocator>::size_type start = 0)
+      char_type value = ' ',
+      typename string_impl<Allocator>::size_type pos = 0)
 {
-  return { "", "" };
+  const size_t index = s.find(value, pos);
+  return { s.substr(0, index), s.substr(index) };
 }
 
 } // namespace architekton

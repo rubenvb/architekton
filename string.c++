@@ -35,63 +35,18 @@ THE SOFTWARE.
 namespace architekton
 {
 
-string string::substr(size_type pos,
-                      size_type count) const
-{
-  //TODO: make better
-  if(pos+count > data.size())
-    throw std::out_of_range("substr called for out of range blabla");
 
-  if(count != npos)
-    return string(&data[pos], &data[pos+count]);
-  else
-    return string(&data[pos], &data[data.size()-1]);
-}
+//string operator+(const string& left, const string& right)
+//{
+//  debug_print(debug::string, "Concatenating strings \'", left, "\' and \'", right, "\'.");
+//  string result(left.size() + right.size()-1);
+//  std::copy(std::begin(left), std::end(left)-1, std::begin(result));
 
-std::pair<string, string> string::split(char_type split,
-                                        size_type start) const
-{
-  const auto index = find(split, start);
+//  std::copy(std::begin(right), std::end(right), std::begin(result) + left.size()-1);
 
-  return { substr(start, index), substr(index, string::npos)};
-}
+//  debug_print(debug::string, "Result: \'", result, "\'.");
+//  return result;
+//}
 
-string::size_type string::find(char_type c,
-                               size_type pos) const
-{
-  auto result = std::find(std::begin(data)+pos, std::end(data), c);
-  if(result != std::end(data))
-    return std::distance(std::begin(data), result);
-  else
-    return npos;
-}
-
-string operator+(const string& left, const string& right)
-{
-  debug_print(debug::string, "Concatenating strings \'", left, "\' and \'", right, "\'.");
-  string result(left.size() + right.size()-1);
-  std::copy(std::begin(left), std::end(left)-1, std::begin(result));
-
-  std::copy(std::begin(right), std::end(right), std::begin(result) + left.size()-1);
-
-  debug_print(debug::string, "Result: \'", result, "\'.");
-  return result;
-}
-
-string operator/(const string& left, const string& right)
-{
-  debug_print(debug::string, "Concatenating paths: \'", left, "\' and \'", right, "\'.");
-  string result;
-  if(left.empty())
-    result = right;
-  else if(right.empty())
-    result = left;
-  else if('/' == left.back())
-    result = left.substr(0,left.size()-2) + "/" + right;
-  else
-    result = left + "/" + right;
-
-  return result;
-}
 
 } // namespace architekton

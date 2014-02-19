@@ -45,10 +45,10 @@ class project : public target
 {
 public:
   project(const architekton::options& options)
-  : target(options.main_project_file.split('.').first, options), filename(options.main_project_file) {}
+  : target(split(options.main_project_file, '.').first, options), filename(options.main_project_file) {}
   project(const string& filename,
           const architekton::options& options)
-  : target(filename.split('.').first, options) {}
+  : target(split(filename, '.').first, options) {}
 
   void load_project();
 

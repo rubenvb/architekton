@@ -66,9 +66,9 @@ string current_working_directory()
   while(cwd.size() < 1024*1024) // more magic numbers!
   {
 #ifdef _WIN32
-    DWORD result = GetCurrentDirectoryW(static_cast<DWORD>(cwd.size()), cwd.raw());
+    DWORD result = GetCurrentDirectoryW(static_cast<DWORD>(cwd.size()), cwd.c_str());
 #else
-    char* result = getcwd(cwd.raw(), cwd.size());
+    char* result = getcwd(cwd.c_str(), cwd.size());
 #endif
     if(result != 0) // nullptr (Unix) or 0 (Windows)
       break;
@@ -79,7 +79,7 @@ bool directory_exists(const string& name)
 {
   debug_print(debug::utility, "directory_exists called on ", name);
 #ifdef _WIN32
-  DWORD attributes = GetFileAttributesW(name.raw());
+  DWORD attributes = GetFileAttributesW(name.c_str());
   return (attributes != INVALID_FILE_ATTRIBUTES
           && (attributes & FILE_ATTRIBUTE_DIRECTORY));
 #else
@@ -95,7 +95,7 @@ bool file_exists(const string& name)
 {
   debug_print(debug::utility, "file_exists called on ", name);
 #ifdef _WIN32
-  DWORD attributes = GetFileAttributesW(name.raw());
+  DWORD attributes = GetFileAttributesW(name.c_str());
   return (attributes != INVALID_FILE_ATTRIBUTES
           && !(attributes & FILE_ATTRIBUTE_DIRECTORY));
 #else
@@ -115,8 +115,9 @@ file_set find_files(const string& directory,
   WIN32_FIND_DATAW data;
   const string filename = //"\\\\?\\" + current_working_directory() +
                           directory / pattern;
+  debug_print(debug::utility, "Searching for: ", filename);
 
-  HANDLE result = FindFirstFileW(filename.raw(), &data);
+  HANDLE result = FindFirstFileW(filename.c_str(), &data);
   if(result == INVALID_HANDLE_VALUE)
     throw error("Cannot find file: " + filename);
 
@@ -176,14 +177,14 @@ time_t filetime_to_time_t(FILETIME ft)
 #include <ext/stdio_filebuf.h>
 unique_ptr<istream> open_ifstream(const file& file)
 {
-  FILE* c_file = _wfopen(file.name.raw(), L"r");
+  FILE* c_file = _wfopen(file.name.c_str(), L"r");
   __gnu_cxx::stdio_filebuf<char>* buffer = new __gnu_cxx::stdio_filebuf<char>(c_file, std::ios_base::in, 1);
 
   return unique_ptr<istream>(new istream(buffer));
 }
 unique_ptr<ostream> open_ofstream(const file& file)
 {
-  FILE* c_file = _wfopen(file.name.raw(), L"w+");
+  FILE* c_file = _wfopen(file.name.c_str(), L"w+");
   __gnu_cxx::stdio_filebuf<char>* buffer = new __gnu_cxx::stdio_filebuf<char>(c_file, std::ios_base::out, 1);
 
   return unique_ptr<ostream>(new ostream(buffer));
