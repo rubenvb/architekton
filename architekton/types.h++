@@ -33,7 +33,6 @@ THE SOFTWARE.
 #define ARCHITEKTON_TYPEDEFS_H
 
 #include "architekton/global.h++"
-#include "architekton/string.h++"
 
 #include <memory>
 #include <set>
@@ -48,9 +47,9 @@ struct file;
 class target;
 
 using file_set = std::set<file>;
-using string_pair = std::pair<string, string>;
-using string_set = std::set<string>;
-using string_vector = std::vector<string>;
+using string_pair = std::pair<std::string, std::string>;
+using string_set = std::set<std::string>;
+using string_vector = std::vector<std::string>;
 
 using target_vector = std::vector<std::unique_ptr<target>>;
 

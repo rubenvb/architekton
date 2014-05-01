@@ -33,6 +33,7 @@ THE SOFTWARE.
 #include "architekton/global.h++"
 
 #include "architekton/types.h++"
+#include "utility.h++"
 
 #ifdef _WIN32
 #define WIN32_MEAN_AND_LEAN
@@ -43,33 +44,52 @@ THE SOFTWARE.
 #endif
 
 #include <iostream>
-
-#include <typeinfo>
-
 namespace architekton
 {
 
-inline void print() {}
-
-template <typename T, typename ...ArgTypes>
-inline void print(T t, ArgTypes ...args)
+#ifdef _WIN32
+template<std::size_t N>
+inline std::wostream& operator<<(std::wostream& os, const char (&string)[N])
 {
-  std::wcout << t;
-  if(sizeof...(args))
-    print(args...);
+  for(auto& c : string)
+    os << c;
+  return os;
 }
+inline std::wostream& operator<<(std::wostream& os, const std::string& string)
+{
+  return os << convert_to_utf16(string).c_str();
+}
+#endif
 
-/*template<typename... ArgTypes>
+template<typename... ArgTypes>
 inline void print(ArgTypes... args)
 {
   // trick to expand variadic argument pack without recursion
   using expand_variadic_pack  = int[];
   // first zero is to prevent empty braced-init-list
   // void() is to prevent overloaded operator, messing things up
-  // trick is to use the side effect of list-initializer to call a function
-  //  on every argument.
+  // trick is to use the side effect of list-initializer to call a function on every argument, in order.
   // (void) is to suppress "statement has no effect" warnings
+#ifdef _WIN32
   (void)expand_variadic_pack{0, ((std::wcout << args), void(), 0)... };
+#else
+  (void)expand_variadic_pack{0, ((std::cout << args), void(), 0)... };
+#endif
+}
+
+/*inline void print() {}
+
+template <typename T, typename ...ArgTypes>
+inline void print(T t, ArgTypes ...args)
+{
+#ifdef _WIN32
+  std::wcout << t;
+#else
+  std::cout << t;
+#endif
+
+  if(sizeof...(args))
+    print(args...);
 }*/
 
 } // namespace architekton

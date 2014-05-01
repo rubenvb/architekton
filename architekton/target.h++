@@ -32,7 +32,7 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-#include "architekton/string.h++"
+#include <string>
 
 namespace architekton
 {
@@ -41,11 +41,11 @@ struct options;
 class target
 {
 public:
-  target(const string& name,
+  target(const std::string& name,
          const architekton::options& options)
   : name(name), options(options) {}
 
-  const string name;
+  const std::string name;
   const architekton::options& options;
 };
 

@@ -28,7 +28,6 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
-CONFIG += c++11
 CONFIG += debug_and_release
 
 OTHER_FILES += Codestyle.txt \
@@ -41,14 +40,15 @@ OTHER_FILES += Codestyle.txt \
 # mess to work with *.c++ extension
 QMAKE_EXT_CPP = .c++
 QMAKE_EXT_H = .h++
-*msvc*:QMAKE_CPPFLAGS += /Tp # doesn't work :(
-*g++*:QMAKE_CXXFLAGS += -pedantic-errors -Wextra \#-Werror \
+#*msvc*:QMAKE_CPPFLAGS += /Tp # doesn't work :(
+
+*g++*:QMAKE_CXXFLAGS += -std=c++1y -pedantic-errors -Wextra \#-Werror \
                         -Winit-self -Wmissing-include-dirs \
                         -Wstrict-aliasing \
                         -Wno-unused-local-typedefs # Boost.Concept 1.55.0 problem
 
 INCLUDEPATH += .
-win32*:INCLUDEPATH += M:\Development\boost_1_55_0
+win32*:INCLUDEPATH += M:\\Development\\boost_1_55_0
 
 CONFIG(debug, debug|release)
 {
@@ -64,9 +64,9 @@ SOURCES += \
     error.c++ \
     debug.c++ \
     file.c++ \
-    string.c++ \
     blueprint_loaders.c++ \
-    options.c++
+    options.c++ \
+    utility.c++
 
 HEADERS += \
     architekton/global.h++ \
@@ -76,11 +76,11 @@ HEADERS += \
     architekton/external.h++ \
     architekton/commandline.h++ \
     architekton/error.h++ \
-    architekton/string.h++ \
     architekton/print.h++ \
     architekton/make_unique.h++ \
     architekton/file.h++ \
     architekton/debug.h++ \
     architekton/types.h++ \
     architekton/blueprint_loaders.h++ \
-    architekton/assert.h++
+    architekton/assert.h++ \
+    architekton/utility.h++

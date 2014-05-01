@@ -32,7 +32,10 @@ THE SOFTWARE.
 #include "architekton/error.h++"
 #include "architekton/file.h++"
 #include "architekton/options.h++"
-#include "architekton/string.h++"
+#include "architekton/utility.h++"
+
+#include <string>
+  using std::string;
 
 namespace architekton
 {
@@ -46,15 +49,21 @@ void parse_commandline(int,
   auto argv = CommandLineToArgvW(GetCommandLineW(), &argc);
   if(argv == nullptr)
     throw error("Call to CommandLineToArgvW failed.");
+  string_vector args;
+  args.reserve(static_cast<string_vector::size_type>(argc));
+  for(int i=1; i<argc; ++i) // skip argv[0]
+  {
+    args.push_back(convert_to_utf8(argv[i]));
+  }
 #else
 void parse_commandline(int argc,
                        char* argv[],
                        options& options)
 {
+  string_vector args(argv+1, argv+argc); // skip argv[0]
 #endif
   debug_print(debug::commandline, "Step 1: Commandline arguments.");
 
-  string_vector args(argv+1, argv+argc); // skip argv[0]
   bool first_dashless_argument = true;
   for(auto&& arg : args)
   {
@@ -123,7 +132,7 @@ void parse_commandline(int argc,
 
 void set_option(const string &key,
                 const string &value,
-                options &options)
+                options &/*options*/)
 {
   debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key, "\', value=\'", value, "\'.");
   if(key == "debug")

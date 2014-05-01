@@ -33,9 +33,9 @@ THE SOFTWARE.
 #include "architekton/global.h++"
 
 #include "architekton/options.h++"
-#include "architekton/string.h++"
 #include "architekton/target.h++"
 #include "architekton/types.h++"
+#include "architekton/utility.h++"
 
 namespace architekton
 {
@@ -46,14 +46,14 @@ class project : public target
 public:
   project(const architekton::options& options)
   : target(split(options.main_project_file, '.').first, options), filename(options.main_project_file) {}
-  project(const string& filename,
+  project(const std::string& filename,
           const architekton::options& options)
   : target(split(filename, '.').first, options) {}
 
   void load_project();
 
 private:
-  const string filename; // relative to general source directory in options
+  const std::string filename; // relative to general source directory in options
   target_vector targets; // targets defined in project file
 };
 

@@ -32,12 +32,12 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-#include "architekton/string.h++"
 #include "architekton/types.h++"
 
 #include <ctime>
 #include <iostream>
 #include <memory>
+#include <string>
 
 #ifdef _WIN32
 #ifndef WIN32_MEAN_AND_LEAN
@@ -50,22 +50,22 @@ THE SOFTWARE.
 namespace architekton
 {
 
-string current_working_directory();
+std::string current_working_directory();
 
 #ifdef _WIN32
 std::time_t filetime_to_time_t(FILETIME ft);
 #endif
 
-bool directory_exists(const string& name);
+bool directory_exists(const std::string& name);
 
-bool file_exists(const string& name);
+bool file_exists(const std::string& name);
 
-file_set find_files(const string& directory,
-                    const string& pattern = "");
+file_set find_files(const std::string& directory,
+                    const std::string& pattern = "");
 
 struct file
 {
-  file(string filename,
+  file(std::string filename,
 #ifdef _WIN32
        FILETIME last_modified)
   : name(filename), last_modified(filetime_to_time_t(last_modified)) {}
@@ -76,7 +76,7 @@ struct file
 
   bool operator<(const file& rhs) const { return name < rhs.name; }
 
-  const string name;
+  const std::string name;
   time_t last_modified;
 };
 

@@ -32,7 +32,7 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-#include "architekton/string.h++"
+#include <string>
 
 namespace architekton
 {
@@ -44,8 +44,8 @@ void parse_commandline(int argc,
                        char* argv[],
                        options& options);
 
-void set_option(const string& key,
-                const string& value,
+void set_option(const std::string& key,
+                const std::string& value,
                 options& options);
 
 } // namespace architekton

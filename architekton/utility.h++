@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2014 Ruben Van Boxem
+Copyright (c) 2013 Ruben Van Boxem
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,27 +23,37 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - blueprint_loader.h++
- * Parses *.blueprint.txt files which list (and describe):
- *  - OS types,
- *  - CPU architectures,
- *  - Toolchains.
+ * architekton - utility.h++
+ * Various utilities.
  **/
 
-#ifndef ARCHITEKTON_BLUEPRINT_LOADERS
-#define ARCHITEKTON_BLUEPRINT_LOADERS
+#ifndef ARCHITEKTON_UTILITY_H
+#define ARCHITEKTON_UTILITY_H
 
 #include "architekton/global.h++"
 
 #include "architekton/types.h++"
 
+#include <string>
+
 namespace architekton
 {
+// string extensions
+string_pair split(const std::string& s,
+                         char value = ' ',
+                         std::string::size_type pos = 0);
 
-string_set load_architectures(const std::string& input);
-string_set load_OSes();
-string_set load_toolchains();
+std::string operator/(const std::string& left,
+                      const std::string& right);
 
-} // namespace architekton
+// OS dependent utilities
+std::string support_files_location();
 
-#endif // ARCHITEKTON_BLUEPRINT_LOADERS
+#ifdef _WIN32
+const std::string convert_to_utf8(const std::wstring& utf16_string);
+const std::wstring convert_to_utf16(const std::string& utf8_string);
+#endif
+
+}
+
+#endif // ARCHITEKTON_UTILITY_H

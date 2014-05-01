@@ -30,11 +30,12 @@ THE SOFTWARE.
 #include "architekton/error.h++"
 
 #include "architekton/file.h++"
-#include "architekton/string.h++"
 #include "architekton/types.h++"
 
 #include <iostream>
   using std::wcerr;
+#include <string>
+  using std::string;
 
 namespace architekton
 {
@@ -42,7 +43,7 @@ namespace architekton
 error::~error()
 {}
 
-error::error(string message,
+error::error(std::string message,
              const file_set& files)
 : message(message),
   list()
@@ -57,12 +58,12 @@ error::error(string message,
 void error::print() const
 {
   wcerr << "Error:\n"
-           "\t" << message << "\n";
+           "\t" << message.c_str() << "\n";
   if(!list.empty())
     {
       for(auto&& item : list)
       {
-        wcerr << "\t" << item << "\n";
+        wcerr << "\t" << item.c_str() << "\n";
       }
     }
 }

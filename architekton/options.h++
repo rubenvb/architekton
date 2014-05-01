@@ -35,6 +35,8 @@ THE SOFTWARE.
 #include "architekton/file.h++"
 #include "architekton/types.h++"
 
+#include <string>
+
 namespace architekton
 {
 
@@ -50,8 +52,8 @@ struct options
   toolchain target_toolchain;
 */
 
-  string source_directory;
-  string main_project_file;
+  std::string source_directory;
+  std::string main_project_file;
 
   string_set targets_to_build;
 

@@ -30,7 +30,7 @@ THE SOFTWARE.
 #include "architekton/debug.h++"
 #include "architekton/error.h++"
 #include "architekton/file.h++"
-#include "architekton/string.h++"
+#include "architekton/utility.h++"
 
 #include <ctime>
   using std::time_t;
@@ -42,6 +42,9 @@ THE SOFTWARE.
   using std::ostream;
 #include <memory>
   using std::unique_ptr;
+#include <string>
+  using std::string;
+  using std::wstring;
 
 #ifdef _WIN32
 #ifndef WIN32_MEAN_AND_LEAN
@@ -60,66 +63,76 @@ THE SOFTWARE.
 namespace architekton
 {
 
-string current_working_directory()
+std::string current_working_directory()
 {
-  string cwd(256); // ooh, magic number!
+#ifdef _WIN32
+  const DWORD size = GetCurrentDirectoryW(0, nullptr);
+
+  std::wstring cwd;
+  cwd.resize(size);
+
+  if(GetCurrentDirectoryW(size, &cwd[0])+1 != size)
+    throw error("Failed to retrieve the current directory using GetCurrentDirectoryW.");
+
+  return convert_to_utf8(cwd);
+#else
+  std::string cwd;
+  cwd.resize(256); // ooh, magic number!
   while(cwd.size() < 1024*1024) // more magic numbers!
   {
-#ifdef _WIN32
-    DWORD result = GetCurrentDirectoryW(static_cast<DWORD>(cwd.size()), cwd.c_str());
-#else
-    char* result = getcwd(cwd.c_str(), cwd.size());
-#endif
-    if(result != 0) // nullptr (Unix) or 0 (Windows)
+    const char* result = getcwd(&cwd[0], cwd.size());
+    if(result != nullptr)
       break;
+    cwd.resize(cwd.size()+256);
   }
   return cwd;
+#endif
 }
-bool directory_exists(const string& name)
+bool directory_exists(const std::string& name)
 {
   debug_print(debug::utility, "directory_exists called on ", name);
 #ifdef _WIN32
-  DWORD attributes = GetFileAttributesW(name.c_str());
+  DWORD attributes = GetFileAttributesW(convert_to_utf16(name).c_str());
   return (attributes != INVALID_FILE_ATTRIBUTES
           && (attributes & FILE_ATTRIBUTE_DIRECTORY));
 #else
   struct stat info;
-  if(stat(name.raw(), &info) == 0)
+  if(stat(name.c_str(), &info) == 0)
     return S_ISDIR(info.st_mode);
   else
     return false;
 #endif
 }
 
-bool file_exists(const string& name)
+bool file_exists(const std::string& name)
 {
   debug_print(debug::utility, "file_exists called on ", name);
 #ifdef _WIN32
-  DWORD attributes = GetFileAttributesW(name.c_str());
+  DWORD attributes = GetFileAttributesW(convert_to_utf16(name).c_str());
   return (attributes != INVALID_FILE_ATTRIBUTES
           && !(attributes & FILE_ATTRIBUTE_DIRECTORY));
 #else
   struct stat info;
-  if(stat(name.raw(), &info) == 0)
+  if(stat(name.c_str(), &info) == 0)
     return S_ISREG(info.st_mode);
   else
     return false;
 #endif
 }
 
-file_set find_files(const string& directory,
-                    const string& pattern)
+file_set find_files(const std::string& directory,
+                    const std::string& pattern)
 {
   file_set files;
 #ifdef _WIN32
   WIN32_FIND_DATAW data;
-  const string filename = //"\\\\?\\" + current_working_directory() +
-                          directory / pattern;
+  const wstring filename = //"\\\\?\\" + current_working_directory() +
+                           convert_to_utf16(directory / pattern);
   debug_print(debug::utility, "Searching for: ", filename);
 
   HANDLE result = FindFirstFileW(filename.c_str(), &data);
   if(result == INVALID_HANDLE_VALUE)
-    throw error("Cannot find file: " + filename);
+    throw error("Cannot find file: " + convert_to_utf8(filename));
 
   do
   {
@@ -127,34 +140,34 @@ file_set find_files(const string& directory,
     if(!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
       debug_print(debug::utility, "Found file: \'", data.cFileName, "\'.");
-      files.insert(file(data.cFileName, data.ftLastWriteTime));
+      files.insert(file(convert_to_utf8(data.cFileName), data.ftLastWriteTime));
     }
   } while(FindNextFileW(result, &data) != 0);
 #else
   // TODO implement for Unix
   // use fnmatch for wildcard matching
-  DIR* dir = opendir(directory.raw());
+  DIR* dir = opendir(directory.c_str());
 
   if(dir == nullptr)
     throw error("Unable to open directory: " + directory);
 
-  const string filename = directory / pattern;
+  const std::string filename = directory / pattern;
   for(dirent* entry = readdir(dir); entry != nullptr; entry = readdir(dir))
   {
     // skip . and ..
-    if(string(entry->d_name) == "." || string(entry->d_name) == "..")
+    if(std::string(entry->d_name) == "." || std::string(entry->d_name) == "..")
       continue;
 
     struct stat attributes;
-    const string entry_name = directory / entry->d_name;
-    if(stat(entry_name.raw(), &attributes) == -1)
+    const std::string entry_name = directory / entry->d_name;
+    if(stat(entry_name.c_str(), &attributes) == -1)
       throw error("Stat call failed for: \'" + entry_name + "\'.");
 
     debug_print(debug::utility, "Found file or directory: \'", entry_name);
     if(S_ISREG(attributes.st_mode))
     {
-      debug_print(debug::utility, "Matching \'", filename, "\' to \'", entry_name.raw(), "\'.");
-      if(fnmatch(filename.raw(), entry_name.raw(), FNM_PATHNAME) == 0)
+      debug_print(debug::utility, "Matching \'", filename, "\' to \'", entry_name.c_str(), "\'.");
+      if(fnmatch(filename.c_str(), entry_name.c_str(), FNM_PATHNAME) == 0)
       {
         debug_print(debug::utility, "Match found.");
         files.insert(file(entry->d_name, attributes.st_mtime));
@@ -177,14 +190,14 @@ time_t filetime_to_time_t(FILETIME ft)
 #include <ext/stdio_filebuf.h>
 unique_ptr<istream> open_ifstream(const file& file)
 {
-  FILE* c_file = _wfopen(file.name.c_str(), L"r");
+  FILE* c_file = _wfopen(convert_to_utf16(file.name).c_str(), L"r");
   __gnu_cxx::stdio_filebuf<char>* buffer = new __gnu_cxx::stdio_filebuf<char>(c_file, std::ios_base::in, 1);
 
   return unique_ptr<istream>(new istream(buffer));
 }
 unique_ptr<ostream> open_ofstream(const file& file)
 {
-  FILE* c_file = _wfopen(file.name.c_str(), L"w+");
+  FILE* c_file = _wfopen(convert_to_utf16(file.name).c_str(), L"w+");
   __gnu_cxx::stdio_filebuf<char>* buffer = new __gnu_cxx::stdio_filebuf<char>(c_file, std::ios_base::out, 1);
 
   return unique_ptr<ostream>(new ostream(buffer));
@@ -192,11 +205,11 @@ unique_ptr<ostream> open_ofstream(const file& file)
 # elif defined(_MSC_VER)
 unique_ptr<istream> open_ifstream(const file& file)
 {
-  return unique_ptr<istream>(new ifstream(file.name.raw()));
+  return unique_ptr<istream>(new ifstream(convert_to_utf16(file.name).c_str()));
 }
 unique_ptr<ostream> open_ofstream(const file& file)
 {
-  return unique_ptr<ostream>(new ofstream(file.name.raw()));
+  return unique_ptr<ostream>(new ofstream(convert_to_utf16(file.name).c_str()));
 }
 # else
 #error unknown fstream implementation - no unicode filename support
@@ -204,11 +217,11 @@ unique_ptr<ostream> open_ofstream(const file& file)
 #else
 unique_ptr<istream> open_ifstream(const file& file)
 {
-  return unique_ptr<istream>(new ifstream(file.name.raw()));
+  return unique_ptr<istream>(new ifstream(file.name.c_str()));
 }
 unique_ptr<ostream> open_ofstream(const file& file)
 {
-  return unique_ptr<ostream>(new ofstream(file.name.raw()));
+  return unique_ptr<ostream>(new ofstream(file.name.c_str()));
 }
 #endif
 

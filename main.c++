@@ -36,11 +36,14 @@ THE SOFTWARE.
 
 #include <chrono>
 #include <fstream>
+#include <iterator>
 #include <streambuf>
+#include <string>
 #include <ios>
 
 using namespace architekton;
 using namespace std::chrono;
+using namespace std;
 
 int main(int argc, char* argv[])
 {
@@ -52,11 +55,12 @@ int main(int argc, char* argv[])
 
     print("Starting build in \'", current_working_directory(), "\'.\n");
 
+    print("architekton executable is: \'", support_files_location(), "\'\n");
+
     std::ifstream stream;
     stream.open("M:\\Development\\Source\\architekton\\blueprints\\architectures.blueprint.txt", std::ios::in | std::ios::binary );
     if(!stream)
       throw error("cannot open file");
-
 
     string architectures_blueprint;
     std::copy(std::istream_iterator<char>(stream), std::istream_iterator<char>(), std::back_inserter(architectures_blueprint));

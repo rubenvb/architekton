@@ -32,7 +32,6 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-#include "architekton/string.h++"
 #include "architekton/target.h++"
 
 namespace architekton
@@ -41,7 +40,7 @@ namespace architekton
 class external : public target
 {
 public:
-  external(const string& name,
+  external(const std::string& name,
            const architekton::options& options)
   : target(name, options) {}
 };

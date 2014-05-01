@@ -39,12 +39,10 @@ THE SOFTWARE.
   using qi::eol;
   using qi::lit;
 
-#include "architekton/string.h++"
-
 namespace architekton
 {
 
-string_set load_architectures(const string& input)
+string_set load_architectures(const std::string& input)
 {
   string_set architectures;
 

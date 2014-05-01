@@ -32,8 +32,9 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-#include "architekton/string.h++"
 #include "architekton/types.h++"
+
+#include <string>
 
 #ifdef _WIN32
 #ifndef WIN32_MEAN_AND_LEAN
@@ -51,17 +52,17 @@ namespace architekton
 class error
 {
 public:
-  error(string message,
+  error(std::string message,
         string_vector list = {})
   : message(message), list(list) {}
-  error(string message,
+  error(std::string message,
         const file_set& files);
   virtual ~error();
 
   virtual void print() const;
 
 private:
-  const string message;
+  const std::string message;
   string_vector list;
 };
 
