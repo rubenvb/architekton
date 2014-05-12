@@ -29,15 +29,7 @@ THE SOFTWARE.
 
 #include "architekton/blueprint_loaders.h++"
 
-#include <istream>
-
-#include <boost/spirit/include/qi.hpp>
-  namespace spirit = boost::spirit;
-  namespace qi = spirit::qi;
-  using spirit::ascii::space;
-  using spirit::ascii::char_;
-  using qi::eol;
-  using qi::lit;
+#include "architekton/lexer.h++"
 
 namespace architekton
 {
@@ -46,11 +38,6 @@ string_set load_architectures(const std::string& input)
 {
   string_set architectures;
 
-  const auto comment_skipper = space | '#' >> *(char_ - eol) >> eol;
-
-  const auto grammar = lit("architecture") >> *(char_) % eol;
-
-  qi::phrase_parse(std::begin(input), std::end(input), grammar, comment_skipper, architectures);
   return architectures;
 }
 

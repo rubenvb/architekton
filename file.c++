@@ -74,7 +74,7 @@ std::string current_working_directory()
   if(GetCurrentDirectoryW(size, &cwd[0])+1 != size)
     throw error("Failed to retrieve the current directory using GetCurrentDirectoryW.");
 
-  return convert_to_utf8(cwd);
+  return convert_to_utf8(cwd).substr(0,cwd.size()-1);
 #else
   std::string cwd;
   cwd.resize(256); // ooh, magic number!
@@ -126,9 +126,10 @@ file_set find_files(const std::string& directory,
   file_set files;
 #ifdef _WIN32
   WIN32_FIND_DATAW data;
-  const wstring filename = //"\\\\?\\" + current_working_directory() +
-                           convert_to_utf16(directory / pattern);
-  debug_print(debug::utility, "Searching for: ", filename);
+  // Fix this to use the \\?\ prefix, it seems it is not straightforward to just add it here...
+  const wstring filename = convert_to_utf16(current_working_directory() / directory / pattern);
+
+  debug_print(debug::utility, "Searching for: \'", filename, "\'.");
 
   HANDLE result = FindFirstFileW(filename.c_str(), &data);
   if(result == INVALID_HANDLE_VALUE)

@@ -66,7 +66,8 @@ SOURCES += \
     file.c++ \
     blueprint_loaders.c++ \
     options.c++ \
-    utility.c++
+    utility.c++ \
+    lexer.c++
 
 HEADERS += \
     architekton/global.h++ \
@@ -83,4 +84,5 @@ HEADERS += \
     architekton/types.h++ \
     architekton/blueprint_loaders.h++ \
     architekton/assert.h++ \
-    architekton/utility.h++
+    architekton/utility.h++ \
+    architekton/lexer.h++

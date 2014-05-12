@@ -34,6 +34,8 @@ THE SOFTWARE.
 
 #include "architekton/types.h++"
 
+#include <algorithm>
+#include <map>
 #include <string>
 
 namespace architekton
@@ -45,6 +47,36 @@ string_pair split(const std::string& s,
 
 std::string operator/(const std::string& left,
                       const std::string& right);
+
+// output special char's in a readable form
+inline const std::string output_form(const char c)
+{
+  if('\n' == c)
+    return std::string("\\n (newline)");
+  else
+    return std::string(1,c);
+}
+inline const std::string output_form(const std::string token)
+{
+  if("\n" == token)
+    return std::string("\\n");
+  else
+    return token;
+}
+
+// find helpers
+inline bool contains(const std::string& token,
+                     const std::string& characters)
+{
+  return (std::find_first_of(std::begin(token), std::end(token), std::begin(characters), std::end(characters)) != std::end(token));
+}
+// returns true if container contains element
+template <class container>
+bool contains(const container& cont,
+              const typename container::value_type& elem)
+{
+  return (std::find(std::begin(cont), std::end(cont), elem) != std::end(cont));
+}
 
 // OS dependent utilities
 std::string support_files_location();

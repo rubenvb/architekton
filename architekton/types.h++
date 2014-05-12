@@ -37,11 +37,14 @@ THE SOFTWARE.
 #include <memory>
 #include <set>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
 namespace architekton
 {
+
+using char_set = std::unordered_set<char>;
 
 struct file;
 class target;

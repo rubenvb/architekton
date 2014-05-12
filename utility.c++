@@ -80,6 +80,7 @@ std::string support_files_location()
     size += MAX_PATH;
     result.resize(size);
   }
+  result = result.substr(0, result.rfind('\\'));
   return convert_to_utf8(result);
 #else
   //TODO: make configurable

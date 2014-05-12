@@ -68,4 +68,11 @@ void error::print() const
     }
 }
 
+void syntax_error::print() const
+{
+   std::cerr << "Error in: " << filename << "\n"
+   << "line: " << std::to_string(line_number) << "\n";
+   error::print();
+}
+
 } // namespace architekton

@@ -36,16 +36,6 @@ THE SOFTWARE.
 
 #include <string>
 
-#ifdef _WIN32
-#ifndef WIN32_MEAN_AND_LEAN
-#define WIN32_MEAN_AND_LEAN
-#endif
-#include <windows.h>
-#undef WIN32_MEAN_AND_LEAN
-#else
-#include <errno.h>
-#endif
-
 namespace architekton
 {
 
@@ -64,6 +54,22 @@ public:
 private:
   const std::string message;
   string_vector list;
+};
+
+class syntax_error : public error
+{
+public:
+  syntax_error(const std::string& message,
+               const std::string& filename,
+               const std::size_t line_number,
+               const string_vector& list = {})
+  : error(message, list), filename(filename), line_number(line_number) {}
+
+  void print() const;
+
+protected:
+  const std::string filename;
+  const std::size_t line_number;
 };
 
 } // namespace architekton
