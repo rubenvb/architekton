@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - lexer
+ * architekton - lexer.c++
  * Class implementation.
  **/
 

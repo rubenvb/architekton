@@ -23,27 +23,19 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - blueprint_loader.h++
- * Parses *.blueprint.txt files which list (and describe):
- *  - OS types,
- *  - CPU architectures,
- *  - Toolchains.
+ * architekton - blueprint_loader.c++
+ * Loads files with information on:
+ *  - architectures,
+ *  - toolchains,
+ *  - OSes,
+ *  - ...
  **/
 
-#ifndef ARCHITEKTON_BLUEPRINT_LOADERS
-#define ARCHITEKTON_BLUEPRINT_LOADERS
-
-#include "architekton/global.h++"
-
-#include "architekton/types.h++"
+#include "architekton/blueprint_loader.h++"
 
 namespace architekton
 {
 
-string_set load_architectures(const std::string& input);
-string_set load_OSes();
-string_set load_toolchains();
+
 
 } // namespace architekton
-
-#endif // ARCHITEKTON_BLUEPRINT_LOADERS

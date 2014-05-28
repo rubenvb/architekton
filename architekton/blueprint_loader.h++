@@ -23,36 +23,24 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - blueprint_loaders.c++
- * Function implementations.
+ * architekton - blueprint_loader.h++
+ * Loads files with information on:
+ *  - architectures,
+ *  - toolchains,
+ *  - OSes,
+ *  - ...
  **/
 
-#include "architekton/blueprint_loaders.h++"
+#ifndef BLUEPRINT_LOADER
+#define BLUEPRINT_LOADER
 
-#include "architekton/lexer.h++"
+#include "architekton/global.h++"
 
 namespace architekton
 {
 
-string_set load_architectures(const std::string& input)
-{
-  string_set architectures;
-
-  return architectures;
-}
-
-string_set load_OSes()
-{
-  string_set OSes;
-
-  return OSes;
-}
-
-string_set load_toolchains()
-{
-  string_set toolchains;
-
-  return toolchains;
-}
+void load_blueprints();
 
 } // namespace architekton
+
+#endif // BLUEPRINT_LOADER

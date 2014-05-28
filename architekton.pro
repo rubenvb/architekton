@@ -64,10 +64,10 @@ SOURCES += \
     error.c++ \
     debug.c++ \
     file.c++ \
-    blueprint_loaders.c++ \
     options.c++ \
     utility.c++ \
-    lexer.c++
+    lexer.c++ \
+    blueprint_loader.c++
 
 HEADERS += \
     architekton/global.h++ \
@@ -82,7 +82,7 @@ HEADERS += \
     architekton/file.h++ \
     architekton/debug.h++ \
     architekton/types.h++ \
-    architekton/blueprint_loaders.h++ \
     architekton/assert.h++ \
     architekton/utility.h++ \
-    architekton/lexer.h++
+    architekton/lexer.h++ \
+    architekton/blueprint_loader.h++

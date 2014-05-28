@@ -23,7 +23,7 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - lexer
+ * architekton - lexer.h++
  * Basic file reading and token extraction.
  **/
 
