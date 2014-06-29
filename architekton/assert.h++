@@ -34,7 +34,7 @@ THE SOFTWARE.
 #ifndef NDEBUG
 #define NDEBUG
 #endif
-#ifndef ARCHITEKTON_NDEBUG
+#ifndef ARCHITEKTON_NDEBUG // undefine NDEBUG if not previously defined
 #define ARCHITEKTON_NDEBUG
 #endif
 #endif

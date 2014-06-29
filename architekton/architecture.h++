@@ -23,15 +23,29 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - options.c++
- *
+ * architekton - architecture.h++
+ * Class representing an architecture.
+ * I'm sure I'll need it sooner rather than later...
  **/
 
-#include "architekton/options.h++"
+#ifndef ARCHITEKTON_ARCHITECTURE_H
+#define ARCHITEKTON_ARCHITECTURE_H
+
+#include "architekton/global.h++"
+
+#include "architekton/types.h++"
+#include "architekton/utility.h++"
 
 namespace architekton
 {
-string_set options::architectures;
-string_set options::OSes;
-string_set options::toolchains;
-}
+
+struct architecture
+{
+  std::string name;
+  uuid id = architekton::id<architecture>();
+};
+
+} // namespace architekton
+
+
+#endif // ARCHITEKTON_ARCHITECTURE_H

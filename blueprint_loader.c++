@@ -33,9 +33,21 @@ THE SOFTWARE.
 
 #include "architekton/blueprint_loader.h++"
 
+#include "architekton/debug.h++"
+
+#include <string>
+  using std::string;
+
 namespace architekton
 {
 
+void load_blueprints(options& options)
+{
+  const string blueprint_directory = support_files_location() / "blueprints";
+  debug_print(debug::blueprint, "Loading blueprints from: \'", blueprint_directory, "\'.");
+
+
+}
 
 
 } // namespace architekton

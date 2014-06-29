@@ -32,7 +32,10 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
+#include "architekton/architecture.h++"
 #include "architekton/file.h++"
+#include "architekton/os.h++"
+#include "architekton/toolchain.h++"
 #include "architekton/types.h++"
 
 #include <string>
@@ -56,10 +59,6 @@ struct options
   std::string main_project_file;
 
   string_set targets_to_build;
-
-  static string_set architectures;
-  static string_set OSes;
-  static string_set toolchains;
 };
 
 } // namespace architekton

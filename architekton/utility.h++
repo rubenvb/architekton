@@ -35,11 +35,15 @@ THE SOFTWARE.
 #include "architekton/types.h++"
 
 #include <algorithm>
+#include <atomic>
 #include <map>
 #include <string>
 
 namespace architekton
 {
+// Generate unique id for stuff (thanks to @Griwes in the Lounge<C++>)
+template<typename> // tag so that each class has its own set
+uuid id() { static std::atomic<uuid> current{ 1 }; return current++; }
 // string extensions
 string_pair split(const std::string& s,
                          char value = ' ',

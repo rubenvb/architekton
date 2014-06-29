@@ -71,6 +71,7 @@ std::string operator/(const std::string& left,
 
 std::string support_files_location()
 {
+  //TODO: make configurable with environment variable or some such
 #ifdef _WIN32
   std::size_t size = MAX_PATH;
   std::wstring result;
@@ -83,7 +84,6 @@ std::string support_files_location()
   result = result.substr(0, result.rfind('\\'));
   return convert_to_utf8(result);
 #else
-  //TODO: make configurable
   return "/usr/share/architekton";
 #endif
 }

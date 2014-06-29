@@ -51,7 +51,7 @@ enum debug : std::uint32_t
   parser = 4,
   parslexer = lexer ^ parser,
   utility = 8,
-  string = 16,
+  blueprint = 16,
   // ...
   always = 0xffffffff,
   everything = always
@@ -80,8 +80,8 @@ inline void debug_print(debug::debug level, ArgTypes... args)
       case debug::utility:
         print("~UTILITY~~~~~ ");
         break;
-      case debug::string:
-        print("~STRING~~~~~~ ");
+      case debug::blueprint:
+        print("~BLUEPRINT~~~ ");
         break;
       default:
         print("~UNKNOWN~~~~~ ");

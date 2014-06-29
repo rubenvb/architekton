@@ -23,25 +23,29 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - blueprint_loader.h++
- * Loads files with information on:
- *  - architectures,
- *  - toolchains,
- *  - OSes,
- *  - ...
+ * architekton - os.h++
+ * Class representing an OS.
+ * I'm sure I'll need it sooner rather than later...
  **/
 
-#ifndef BLUEPRINT_LOADER
-#define BLUEPRINT_LOADER
+#ifndef ARCHITEKTON_OS_H
+#define ARCHITEKTON_OS_H
+
 
 #include "architekton/global.h++"
 
+#include "architekton/types.h++"
+#include "architekton/utility.h++"
+
 namespace architekton
 {
-struct options;
 
-void load_blueprints(options& options);
+struct os
+{
+  std::string name;
+  uuid id = architekton::id<os>();
+};
 
 } // namespace architekton
 
-#endif // BLUEPRINT_LOADER
+#endif // ARCHITEKTON_OS_H

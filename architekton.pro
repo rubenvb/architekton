@@ -42,10 +42,12 @@ QMAKE_EXT_CPP = .c++
 QMAKE_EXT_H = .h++
 #*msvc*:QMAKE_CPPFLAGS += /Tp # doesn't work :(
 
-*g++*:QMAKE_CXXFLAGS += -std=c++1y -pedantic-errors -Wextra \#-Werror \
-                        -Winit-self -Wmissing-include-dirs \
-                        -Wstrict-aliasing \
-                        -Wno-unused-local-typedefs # Boost.Concept 1.55.0 problem
+MY_CXXFLAGS = -std=c++1y -pedantic-errors -Wextra \#-Werror \
+              -Winit-self -Wmissing-include-dirs \
+              -Wstrict-aliasing \
+              -Wno-unused-local-typedefs # Boost.Concept 1.55.0 problem
+*g++*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS}
+*clang*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS}
 
 INCLUDEPATH += .
 win32*:INCLUDEPATH += M:\\Development\\boost_1_55_0
@@ -64,7 +66,6 @@ SOURCES += \
     error.c++ \
     debug.c++ \
     file.c++ \
-    options.c++ \
     utility.c++ \
     lexer.c++ \
     blueprint_loader.c++
@@ -78,11 +79,13 @@ HEADERS += \
     architekton/commandline.h++ \
     architekton/error.h++ \
     architekton/print.h++ \
-    architekton/make_unique.h++ \
     architekton/file.h++ \
     architekton/debug.h++ \
     architekton/types.h++ \
     architekton/assert.h++ \
     architekton/utility.h++ \
     architekton/lexer.h++ \
-    architekton/blueprint_loader.h++
+    architekton/blueprint_loader.h++ \
+    architekton/architecture.h++ \
+    architekton/os.h++ \
+    architekton/toolchain.h++

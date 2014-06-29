@@ -44,6 +44,8 @@ THE SOFTWARE.
 namespace architekton
 {
 
+using uuid = std::uintmax_t;
+
 using char_set = std::unordered_set<char>;
 
 struct file;
