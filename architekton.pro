@@ -42,12 +42,11 @@ QMAKE_EXT_CPP = .c++
 QMAKE_EXT_H = .h++
 #*msvc*:QMAKE_CPPFLAGS += /Tp # doesn't work :(
 
-MY_CXXFLAGS = -std=c++1y -pedantic-errors -Wextra \#-Werror \
+MY_CXXFLAGS = -std=c++1y -pedantic -Wextra \
               -Winit-self -Wmissing-include-dirs \
-              -Wstrict-aliasing \
-              -Wno-unused-local-typedefs # Boost.Concept 1.55.0 problem
-*g++*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS}
-*clang*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS}
+              -Wstrict-aliasing
+*g++*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS} -Wno-unused-local-typedefs # Boost.Concept 1.55.0 problem
+*clang*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS} #-stdlib=libc++ #can't add -lc++abi to end of link command.
 
 INCLUDEPATH += .
 win32*:INCLUDEPATH += M:\\Development\\boost_1_55_0
