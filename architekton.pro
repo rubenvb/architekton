@@ -49,7 +49,6 @@ MY_CXXFLAGS = -std=c++1y -pedantic -Wextra \
 *clang*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS} #-stdlib=libc++ #can't add -lc++abi to end of link command.
 
 INCLUDEPATH += .
-win32*:INCLUDEPATH += M:\\Development\\boost_1_55_0
 
 CONFIG(debug, debug|release)
 {
