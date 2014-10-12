@@ -23,47 +23,17 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - options.h++
- * Struct containing all options that can influence the build process.
+ * architekton - options.c++
+ * Class implementation.
  **/
 
-#ifndef ARCHITEKTON_OPTIONS_H
-#define ARCHITEKTON_OPTIONS_H
-
-#include "architekton/global.h++"
-
-#include "architekton/architecture.h++"
-#include "architekton/file.h++"
-#include "architekton/os.h++"
-#include "architekton/toolchain.h++"
-#include "architekton/types.h++"
-
-#include <string>
+#include "architekton/options.h++"
 
 namespace architekton
 {
-
-struct blueprints;
-
-struct options
+options::options(const blueprints&)
 {
-  options(const blueprints& blueprints);
-/*
-  architecture build_architecture;
-  os build_os;
-  toolchain build_toolchain;
+  // voodoo magic to find the preferred target and toolchain stuff for the current platform.
+}
 
-  architecture target_architecture;
-  os target_os;
-  toolchain target_toolchain;
-*/
-
-  std::string source_directory;
-  std::string main_project_file;
-
-  string_set targets_to_build;
-};
-
-} // namespace architekton
-
-#endif // ARCHITEKTON_OPTIONS_H
+}

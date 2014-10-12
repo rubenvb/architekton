@@ -31,17 +31,17 @@ THE SOFTWARE.
  *  - ...
  **/
 
-#ifndef BLUEPRINT_LOADER
-#define BLUEPRINT_LOADER
+#ifndef ARCHITEKTON_BLUEPRINT_LOADER_H
+#define ARCHITEKTON_BLUEPRINT_LOADER_H
 
 #include "architekton/global.h++"
 
 namespace architekton
 {
-struct options;
+struct blueprints;
 
-void load_blueprints(options& options);
+void load_blueprints(blueprints& blueprints);
 
 } // namespace architekton
 
-#endif // BLUEPRINT_LOADER
+#endif // ARCHITEKTON_BLUEPRINT_LOADER_H

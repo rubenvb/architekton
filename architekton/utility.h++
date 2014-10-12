@@ -41,6 +41,13 @@ THE SOFTWARE.
 
 namespace architekton
 {
+#ifdef _WIN32
+constexpr char path_seperator = '\\';
+#else
+constexpr char path_seperator = '/';
+#endif
+void convert_path_seperators(std::string& path);
+
 // Generate unique id for stuff (thanks to @Griwes in the Lounge<C++>)
 template<typename> // tag so that each class has its own set
 uuid id() { static std::atomic<uuid> current{ 1 }; return current++; }

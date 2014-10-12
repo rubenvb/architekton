@@ -34,6 +34,8 @@ THE SOFTWARE.
 #include "architekton/blueprint_loader.h++"
 
 #include "architekton/debug.h++"
+#include "architekton/error.h++"
+#include "architekton/file.h++"
 
 #include <string>
   using std::string;
@@ -41,11 +43,14 @@ THE SOFTWARE.
 namespace architekton
 {
 
-void load_blueprints(options& options)
+void load_blueprints(blueprints& blueprints)
 {
   const string blueprint_directory = support_files_location() / "blueprints";
   debug_print(debug::blueprint, "Loading blueprints from: \'", blueprint_directory, "\'.");
 
+  auto blueprint_files = find_files(blueprint_directory, "*.blueprint.txt");
+  if(blueprint_files.empty())
+    throw error("No blueprint files found. Looked in: \'" + blueprint_directory + "\'.");
 
 }
 

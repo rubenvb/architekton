@@ -45,6 +45,16 @@ THE SOFTWARE.
 
 namespace architekton
 {
+void convert_path_seperators(std::string& path)
+{
+#ifdef _WIN32
+  constexpr auto is_wrong_slash = [](char c){ return c == '/'; };
+#else
+  constexpr auto is_wrong_slash = [](char c){ return c == '\\'; };
+#endif
+  std::replace_if(path.begin(), path.end(), is_wrong_slash, path_seperator);
+}
+
 string_pair split(const string& s,
                   char value,
                   string::size_type pos)
@@ -61,10 +71,10 @@ std::string operator/(const std::string& left,
     result = right;
   else if(right.empty())
     result = left;
-  else if('/' == left.back())
-    result = left.substr(0,left.size()-2) + "/" + right;
+  else if(path_seperator == left.back())
+    result = left.substr(0,left.size()-1) + path_seperator + right;
   else
-    result = left + "/" + right;
+    result = left + path_seperator + right;
 
   return result;
 }

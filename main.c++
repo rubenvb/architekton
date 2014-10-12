@@ -28,6 +28,7 @@ THE SOFTWARE.
  **/
 
 #include "architekton/blueprint_loader.h++"
+#include "architekton/blueprints.h++"
 #include "architekton/commandline.h++"
 #include "architekton/error.h++"
 #include "architekton/options.h++"
@@ -55,9 +56,10 @@ int main(int argc, char* argv[])
 
     print("Starting build in \'", current_working_directory(), "\'.\n");
 
-    options options;
+    blueprints blueprints;
+    load_blueprints(blueprints);
 
-    load_blueprints(options);
+    options options(blueprints);
 
     parse_commandline(argc, argv, options);
 
@@ -80,6 +82,6 @@ int main(int argc, char* argv[])
   }
 
   auto time = high_resolution_clock::now() - begin;
-  print("~~~\nTotal architekton execution time was: ",
+  print("\n->Total architekton execution time was: ",
         duration<double, std::milli>(time).count(), " milliseconds.\n");
 }

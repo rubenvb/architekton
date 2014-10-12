@@ -62,12 +62,13 @@ THE SOFTWARE.
 namespace architekton
 {
 
-std::string current_working_directory()
+const string original_working_directory = current_working_directory();
+string current_working_directory()
 {
 #ifdef _WIN32
   const DWORD size = GetCurrentDirectoryW(0, nullptr);
 
-  std::wstring cwd;
+  wstring cwd;
   cwd.resize(size);
 
   if(GetCurrentDirectoryW(size, &cwd[0])+1 != size)
@@ -92,6 +93,9 @@ bool directory_exists(const std::string& name)
   debug_print(debug::utility, "directory_exists called on ", name);
 #ifdef _WIN32
   DWORD attributes = GetFileAttributesW(convert_to_utf16(name).c_str());
+  if(attributes == INVALID_FILE_ATTRIBUTES)
+    debug_print(debug::utility, "invalid file attributes returned, windows error:", GetLastError(), '.');
+
   return (attributes != INVALID_FILE_ATTRIBUTES
           && (attributes & FILE_ATTRIBUTE_DIRECTORY));
 #else
@@ -126,7 +130,7 @@ file_set find_files(const std::string& directory,
 #ifdef _WIN32
   WIN32_FIND_DATAW data;
   // Fix this to use the \\?\ prefix, it seems it is not straightforward to just add it here...
-  const wstring filename = convert_to_utf16(current_working_directory() / directory / pattern);
+  const wstring filename = convert_to_utf16(directory / pattern);
 
   debug_print(debug::utility, "Searching for: \'", filename, "\'.");
 
@@ -144,8 +148,6 @@ file_set find_files(const std::string& directory,
     }
   } while(FindNextFileW(result, &data) != 0);
 #else
-  // TODO implement for Unix
-  // use fnmatch for wildcard matching
   DIR* dir = opendir(directory.c_str());
 
   if(dir == nullptr)

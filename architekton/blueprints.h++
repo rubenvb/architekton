@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2013 Ruben Van Boxem
+Copyright (c) 2014 Ruben Van Boxem
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,47 +23,31 @@ THE SOFTWARE.
  **/
 
 /**
- * architekton - options.h++
- * Struct containing all options that can influence the build process.
+ * architekton - blueprint_loader.c++
+ * Loads files with information on:
+ *  - architectures,
+ *  - toolchains,
+ *  - OSes,
+ *  - ...
  **/
 
-#ifndef ARCHITEKTON_OPTIONS_H
-#define ARCHITEKTON_OPTIONS_H
+#ifndef ARCHITEKTON_BLUEPRINTS_H
+#define ARCHITEKTON_BLUEPRINTS_H
 
 #include "architekton/global.h++"
 
-#include "architekton/architecture.h++"
-#include "architekton/file.h++"
-#include "architekton/os.h++"
-#include "architekton/toolchain.h++"
 #include "architekton/types.h++"
-
-#include <string>
 
 namespace architekton
 {
 
-struct blueprints;
-
-struct options
+struct blueprints
 {
-  options(const blueprints& blueprints);
-/*
-  architecture build_architecture;
-  os build_os;
-  toolchain build_toolchain;
+  string_set architectures;
 
-  architecture target_architecture;
-  os target_os;
-  toolchain target_toolchain;
-*/
 
-  std::string source_directory;
-  std::string main_project_file;
-
-  string_set targets_to_build;
 };
 
 } // namespace architekton
 
-#endif // ARCHITEKTON_OPTIONS_H
+#endif // ARCHITEKTON_BLUEPRINTS_H

@@ -50,6 +50,7 @@ THE SOFTWARE.
 namespace architekton
 {
 
+extern const std::string original_working_directory; // original working directory
 std::string current_working_directory();
 
 #ifdef _WIN32

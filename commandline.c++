@@ -86,6 +86,7 @@ void parse_commandline(int argc,
       if(first_dashless_argument)
       {
         first_dashless_argument = false;
+        convert_path_seperators(arg); // if it were a target name, it won't contain slashes anyway
         if(directory_exists(arg))
         {
           debug_print(debug::commandline, "Possible source directory: \'", arg, "\'.");

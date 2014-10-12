@@ -28,7 +28,7 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
-CONFIG += debug_and_release
+DEFINES -= UNICODE
 
 OTHER_FILES += Codestyle.txt \
     architekton.architekton.txt \
@@ -66,7 +66,8 @@ SOURCES += \
     file.c++ \
     utility.c++ \
     lexer.c++ \
-    blueprint_loader.c++
+    blueprint_loader.c++ \
+    options.c++
 
 HEADERS += \
     architekton/global.h++ \
@@ -86,4 +87,5 @@ HEADERS += \
     architekton/blueprint_loader.h++ \
     architekton/architecture.h++ \
     architekton/os.h++ \
-    architekton/toolchain.h++
+    architekton/toolchain.h++ \
+    architekton/blueprints.h++
