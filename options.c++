@@ -31,9 +31,8 @@ THE SOFTWARE.
 
 namespace architekton
 {
-options::options(const blueprints&)
-{
-  // voodoo magic to find the preferred target and toolchain stuff for the current platform.
-}
+options::options()
+: blueprint_directories(1, support_files_location())
+{ }
 
 }

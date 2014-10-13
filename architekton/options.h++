@@ -47,7 +47,9 @@ struct blueprints;
 
 struct options
 {
-  options(const blueprints& blueprints);
+  options();
+
+  string_vector blueprint_directories;
 /*
   architecture build_architecture;
   os build_os;

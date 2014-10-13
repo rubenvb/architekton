@@ -59,6 +59,9 @@ inline std::wostream& operator<<(std::wostream& os, const std::string& string)
 {
   return os << convert_to_utf16(string).c_str();
 }
+std::ostream& architekton_cout = std::wcout;
+#else
+std::ostream& architekton_cout = std::cout;
 #endif
 
 template<typename... ArgTypes>

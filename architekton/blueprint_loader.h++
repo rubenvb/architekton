@@ -36,11 +36,13 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
+#include "architekton/options.h++"
+
 namespace architekton
 {
 struct blueprints;
 
-void load_blueprints(blueprints& blueprints);
+blueprints load_blueprints(const options& options);
 
 } // namespace architekton
 

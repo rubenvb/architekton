@@ -133,13 +133,13 @@ void parse_commandline(int argc,
 
 void set_option(const string &key,
                 const string &value,
-                options &/*options*/)
+                options &options)
 {
   debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key, "\', value=\'", value, "\'.");
   if(key == "debug")
-  {
     debug_print(debug::commandline, "\'debug\' option currently unhandled.");
-  }
+  else if(key == "blueprints")
+    options.blueprint_directories.push_back(value);
 }
 
 } // namespace architekton

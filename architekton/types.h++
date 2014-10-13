@@ -35,6 +35,7 @@ THE SOFTWARE.
 #include "architekton/global.h++"
 
 #include <memory>
+#include <ostream>
 #include <set>
 #include <string>
 #include <unordered_set>
@@ -58,6 +59,18 @@ using string_vector = std::vector<std::string>;
 
 using target_vector = std::vector<std::unique_ptr<target>>;
 
+inline std::ostream& operator<<(std::ostream& os, const string_vector& strings)
+{
+  os << "\n";
+  if(strings.empty())
+    os << "<empty>\n";
+  else
+  {
+    for(const std::string& string : strings)
+      os << "\t" << string << "\n";
+  }
+  return os;
+}
 } // namespace architekton
 
 #endif // ARCHITEKTON_TYPEDEFS_H

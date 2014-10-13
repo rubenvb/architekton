@@ -64,6 +64,23 @@ bool file_exists(const std::string& name);
 file_set find_files(const std::string& directory,
                     const std::string& pattern = "");
 
+template<template<typename...> class Container>
+file_set find_files(const Container<std::string>& directories,
+                    const std::string& pattern)
+{
+  file_set all_files;
+
+  for(auto&& directory : directories)
+  {
+    file_set some_files = find_files(directory, pattern);
+    for(auto&& file : some_files)
+      all_files.insert(file);
+  }
+
+  return all_files;
+}
+
+
 struct file
 {
   file(std::string filename,

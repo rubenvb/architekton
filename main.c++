@@ -56,12 +56,10 @@ int main(int argc, char* argv[])
 
     print("Starting build in \'", current_working_directory(), "\'.\n");
 
-    blueprints blueprints;
-    load_blueprints(blueprints);
-
-    options options(blueprints);
-
+    options options;
     parse_commandline(argc, argv, options);
+
+    blueprints blueprints = load_blueprints(options);
 
     project project(options);
     print("Loading project \'", project.name, "\'.\n");
