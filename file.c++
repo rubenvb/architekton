@@ -132,7 +132,7 @@ file_set find_files(const std::string& directory,
   // Fix this to use the \\?\ prefix, it seems it is not straightforward to just add it here...
   const wstring filename = convert_to_utf16(directory / pattern);
 
-  debug_print(debug::utility, "Searching for: \'", filename, "\'.");
+  debug_print(debug::utility, "Searching for: \'", convert_to_utf8(filename), "\'.");
 
   HANDLE result = FindFirstFileW(filename.c_str(), &data);
   if(result == INVALID_HANDLE_VALUE)

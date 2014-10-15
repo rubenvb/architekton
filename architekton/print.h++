@@ -39,30 +39,12 @@ THE SOFTWARE.
 #define WIN32_MEAN_AND_LEAN
 #include <windows.h>
 #undef WIN32_MEAN_AND_LEAN
-#include <fcntl.h>
-#include <io.h>
+#include <sstream>
 #endif
 
 #include <iostream>
 namespace architekton
 {
-
-#ifdef _WIN32
-template<std::size_t N>
-inline std::wostream& operator<<(std::wostream& os, const char (&string)[N])
-{
-  for(auto& c : string)
-    os << c;
-  return os;
-}
-inline std::wostream& operator<<(std::wostream& os, const std::string& string)
-{
-  return os << convert_to_utf16(string).c_str();
-}
-std::ostream& architekton_cout = std::wcout;
-#else
-std::ostream& architekton_cout = std::cout;
-#endif
 
 template<typename... ArgTypes>
 inline void print(ArgTypes... args)
@@ -74,7 +56,11 @@ inline void print(ArgTypes... args)
   // trick is to use the side effect of list-initializer to call a function on every argument, in order.
   // (void) is to suppress "statement has no effect" warnings
 #ifdef _WIN32
-  (void)expand_variadic_pack{0, ((std::wcout << args), void(), 0)... };
+  std::stringstream stream;
+  (void)expand_variadic_pack{0, ((stream << args), void(), 0)... };
+
+  std::wstring stuff = convert_to_utf16(stream.str());
+  WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), stuff.c_str(), stuff.size(), nullptr, nullptr);
 #else
   (void)expand_variadic_pack{0, ((std::cout << args), void(), 0)... };
 #endif
