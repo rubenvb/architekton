@@ -140,10 +140,10 @@ file_set find_files(const std::string& directory,
 
   do
   {
-    debug_print(debug::utility, "Found file or directory: \'", data.cFileName, "\'.");
+    debug_print(debug::utility, "Found file or directory: \'", convert_to_utf8(data.cFileName), "\'.");
     if(!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-      debug_print(debug::utility, "Found file: \'", data.cFileName, "\'.");
+      debug_print(debug::utility, "Found file: \'", convert_to_utf8(data.cFileName), "\'.");
       files.insert(file(convert_to_utf8(data.cFileName), data.ftLastWriteTime));
     }
   } while(FindNextFileW(result, &data) != 0);

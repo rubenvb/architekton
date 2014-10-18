@@ -36,13 +36,25 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
-#include "architekton/options.h++"
+#include "architekton/lexer.h++"
 
 namespace architekton
 {
 struct blueprints;
+struct options;
 
 blueprints load_blueprints(const options& options);
+
+class blueprint_parser : public lexer
+{
+  using lexer::lexer;
+
+public:
+  void parse(blueprints& blueprints);
+};
+
+void parse_blueprint(const std::string& filename,
+                     blueprints& blueprints);
 
 } // namespace architekton
 

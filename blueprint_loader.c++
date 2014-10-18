@@ -37,6 +37,8 @@ THE SOFTWARE.
 #include "architekton/debug.h++"
 #include "architekton/error.h++"
 #include "architekton/file.h++"
+#include "architekton/lexer.h++"
+#include "architekton/options.h++"
 
 #include <string>
   using std::string;
@@ -47,15 +49,46 @@ namespace architekton
 blueprints load_blueprints(const options& options)
 {
   blueprints blueprints;
-  debug_print(debug::blueprint, "Loading blueprints from: \'", options.blueprint_directories, "\'.");
+  debug_print(debug::blueprint, "Loading blueprints from:", options.blueprint_directories);
 
   auto blueprint_files = find_files(options.blueprint_directories, "*.blueprint.txt");
   if(blueprint_files.empty())
     throw error("No blueprint files found.");
 
+  for(const auto& blueprint_file : blueprint_files)
+  {
+    auto stream_ptr = open_ifstream(blueprint_file);
+    auto& stream = *stream_ptr;
+    if(!stream)
+      throw error("Failed to open file: \'" + blueprint_file.name + "\'.");
+
+    blueprint_parser parser(stream, blueprint_file.name);
+    parser.parse(blueprints);
+  }
+
+
+  throw error("load_blueprints implementation incomplete.");
 
   return blueprints;
 }
 
+void blueprint_parser::parse(blueprints& blueprints)
+{
+  string token;
+  while(next_token(token))
+  {
+    if(token == "architecture")
+    {
+      if(next_token(token))
+      {
+        debug_print(debug::blueprint, "Found architecture: \'" + token + "\'.");
+
+      }
+      else
+        throw syntax_error("\'architecture\' must be followed by an architecture name.", filename, line_number);
+
+    }
+  }
+}
 
 } // namespace architekton

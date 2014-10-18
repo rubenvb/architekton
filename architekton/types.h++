@@ -61,13 +61,12 @@ using target_vector = std::vector<std::unique_ptr<target>>;
 
 inline std::ostream& operator<<(std::ostream& os, const string_vector& strings)
 {
-  os << "\n";
   if(strings.empty())
-    os << "<empty>\n";
+    os << "\n<empty>";
   else
   {
     for(const std::string& string : strings)
-      os << "\t" << string << "\n";
+      os << "\n\t" << string;
   }
   return os;
 }

@@ -28,6 +28,7 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
+win32:CONFIG += debug_and_release # use the debug and release subdirs in a single build directory
 DEFINES -= UNICODE
 
 OTHER_FILES += Codestyle.txt \

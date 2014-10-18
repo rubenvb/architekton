@@ -60,7 +60,7 @@ string_pair split(const string& s,
                   string::size_type pos)
 {
   const size_t index = s.find(value, pos);
-  return { s.substr(0, index), s.substr(index) };
+  return { s.substr(pos, index-pos), s.substr(index+pos) };
 }
 
 std::string operator/(const std::string& left,

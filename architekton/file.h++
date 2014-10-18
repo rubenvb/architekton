@@ -32,6 +32,7 @@ THE SOFTWARE.
 
 #include "architekton/global.h++"
 
+#include "architekton/print.h++"
 #include "architekton/types.h++"
 
 #include <ctime>
@@ -72,6 +73,11 @@ file_set find_files(const Container<std::string>& directories,
 
   for(auto&& directory : directories)
   {
+    if(!directory_exists(directory))
+    {
+      print("Skipping nonexistent directory: \'", directory, "\'.");
+      continue;
+    }
     file_set some_files = find_files(directory, pattern);
     for(auto&& file : some_files)
       all_files.insert(file);

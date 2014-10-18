@@ -72,7 +72,7 @@ void parse_commandline(int argc,
       if(arg[1] == '-') // arguments should never be empty (min. length 2)
       {
         const auto key_value = split(arg, '=', 2);
-        debug_print(debug::commandline, "Project argument (-key[=value]): key=\'", key_value.first, "\'', value=\'", key_value.second, "\'.");
+        debug_print(debug::commandline, "Project argument (--key[=value]): key=\'", key_value.first, "\'', value=\'", key_value.second, "\'.");
       }
       else
       {
@@ -135,11 +135,16 @@ void set_option(const string &key,
                 const string &value,
                 options &options)
 {
-  debug_print(debug::commandline, "Architekton argument (--key[=value]): key=\'", key, "\', value=\'", value, "\'.");
+  debug_print(debug::commandline, "Architekton argument (-key[=value]): key=\'", key, "\', value=\'", value, "\'.");
   if(key == "debug")
     debug_print(debug::commandline, "\'debug\' option currently unhandled.");
   else if(key == "blueprints")
-    options.blueprint_directories.push_back(value);
+  {
+    if(!directory_exists(value))
+      throw error("Specified \'blueprints\' directory does not exist: \'" + value + "\'.");
+
+    options.blueprint_directories[0] = value;
+  }
 }
 
 } // namespace architekton

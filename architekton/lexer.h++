@@ -25,6 +25,7 @@ THE SOFTWARE.
 /**
  * architekton - lexer.h++
  * Basic file reading and token extraction.
+ * Meant to be inherited by parser classes.
  **/
 
 #ifndef ARCHITEKTON_LEXER
@@ -42,22 +43,32 @@ THE SOFTWARE.
 namespace architekton
 {
 
-extern char_set special_characters;
+extern const char_set special_characters;
 
 class lexer
 {
 public:
   lexer(std::istream& stream,
         const std::string& full_filename,
+        const std::istream::pos_type stream_position,
         const std::size_t line_number = 1,
-        const std::size_t column_number = 1,
-        std::istream::pos_type stream_position = std::istream::pos_type());
+        const std::size_t column_number = 1);
+  lexer(std::istream& stream,
+        const std::string& full_filename,
+        const std::size_t line_number = 1,
+        const std::size_t column_number = 1)
+  : lexer(stream, full_filename, stream.tellg(), line_number, column_number) {}
 
+protected:
   bool next_token(std::string& token,
                   const char_set& special_characters = ::architekton::special_characters);
   void previous_token(); // revert stream position to previous token
   bool next_list_token(std::string& token
                        /*,const configuration& configuration*/);
+
+  const std::string& filename;
+  std::size_t line_number;
+  std::size_t column_number;
 
   // conditionals
   //bool process_conditional();
@@ -69,9 +80,6 @@ public:
 
 private:
   std::istream& stream;
-  const std::string& filename;
-  std::size_t line_number;
-  std::size_t column_number;
   // store one-token-back-position
   std::istream::pos_type previous_position;
   std::size_t previous_line_number;

@@ -42,15 +42,19 @@ THE SOFTWARE.
 namespace architekton
 {
 
+const char_set special_characters = { '(', ')', '{', '}', ':', ',' };
+const char_set special_characters_newline = { '(', ')', '{', '}', ':', ',', '\n' };
+const char_set special_characters_conditional = { '(', ')', '|', '+', '!' };
+
 lexer::lexer(istream& stream,
              const string& filename,
+             std::istream::pos_type stream_position,
              const size_t line_number,
-             const size_t column_number,
-             istream::pos_type stream_position)
-: stream(stream),
-  filename(filename),
+             const size_t column_number)
+: filename(filename),
   line_number(line_number),
-  column_number(column_number)
+  column_number(column_number),
+  stream(stream)
 {
   stream.seekg(stream_position);
   if(!stream)
