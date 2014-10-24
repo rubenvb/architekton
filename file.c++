@@ -68,16 +68,14 @@ string current_working_directory()
 #ifdef _WIN32
   const DWORD size = GetCurrentDirectoryW(0, nullptr);
 
-  wstring cwd;
-  cwd.resize(size);
+  wstring cwd(size, '\0');
 
   if(GetCurrentDirectoryW(size, &cwd[0])+1 != size)
     throw error("Failed to retrieve the current directory using GetCurrentDirectoryW.");
 
   return convert_to_utf8(cwd).substr(0,cwd.size()-1);
 #else
-  std::string cwd;
-  cwd.resize(256); // ooh, magic number!
+  std::string cwd(256, '\0'); // ooh, magic number!
   while(cwd.size() < 1024*1024) // more magic numbers!
   {
     const char* result = getcwd(&cwd[0], cwd.size());
