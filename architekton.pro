@@ -46,8 +46,11 @@ QMAKE_EXT_H = .h++
 MY_CXXFLAGS = -std=c++1y -pedantic -Wextra \
               -Winit-self -Wmissing-include-dirs \
               -Wstrict-aliasing
-*g++*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS} -Wno-unused-local-typedefs # Boost.Concept 1.55.0 problem
-*clang*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS} #-stdlib=libc++ #can't add -lc++abi to end of link command.
+*g++*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS} #-Wno-unused-local-typedefs # Boost.Concept 1.55.0 problem
+*clang*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS} -stdlib=libc++
+*clang*:QMAKE_LFLAGS += -stdlib=libc++
+*clang*:LIBS += -lc++abi
+*icc*:QMAKE_CXXFLAGS += $${MY_CXXFLAGS}
 
 INCLUDEPATH += .
 

@@ -58,35 +58,6 @@ std::string current_working_directory();
 std::time_t filetime_to_time_t(FILETIME ft);
 #endif
 
-bool directory_exists(const std::string& name);
-
-bool file_exists(const std::string& name);
-
-file_set find_files(const std::string& directory,
-                    const std::string& pattern = "");
-
-template<template<typename...> class Container>
-file_set find_files(const Container<std::string>& directories,
-                    const std::string& pattern)
-{
-  file_set all_files;
-
-  for(auto&& directory : directories)
-  {
-    if(!directory_exists(directory))
-    {
-      print("Skipping nonexistent directory: \'", directory, "\'.");
-      continue;
-    }
-    file_set some_files = find_files(directory, pattern);
-    for(auto&& file : some_files)
-      all_files.insert(file);
-  }
-
-  return all_files;
-}
-
-
 struct file
 {
   file(std::string filename,
@@ -107,6 +78,35 @@ struct file
 // File stream opening wrappers for better Unicode filename support (Windows)
 std::unique_ptr<std::istream> open_ifstream(const file& file);
 std::unique_ptr<std::ostream> open_ofstream(const file& file);
+
+// Check existence
+bool directory_exists(const std::string& name);
+bool file_exists(const std::string& name);
+
+// Find files in a directory with a pattern
+file_set find_files(const std::string& directory,
+                    const std::string& pattern = "");
+
+template<template<typename...> class Container, typename... Params>
+file_set find_files(const Container<Params...>& directories,
+                    const std::string& pattern)
+{
+  file_set all_files;
+
+  for(auto&& directory : directories)
+  {
+    if(!directory_exists(directory))
+    {
+      print("Skipping nonexistent directory: \'", directory, "\'.");
+      continue;
+    }
+    file_set some_files = find_files(directory, pattern);
+    for(auto&& file : some_files)
+      all_files.insert(file);
+  }
+
+  return all_files;
+}
 
 } // namespace architekton
 

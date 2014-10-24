@@ -48,9 +48,9 @@ namespace architekton
 void convert_path_seperators(std::string& path)
 {
 #ifdef _WIN32
-  constexpr auto is_wrong_slash = [](char c){ return c == '/'; };
+  const static auto is_wrong_slash = [](char c){ return c == '/'; };
 #else
-  constexpr auto is_wrong_slash = [](char c){ return c == '\\'; };
+  const static auto is_wrong_slash = [](char c){ return c == '\\'; };
 #endif
   std::replace_if(path.begin(), path.end(), is_wrong_slash, path_seperator);
 }
