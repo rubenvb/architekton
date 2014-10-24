@@ -42,7 +42,7 @@ THE SOFTWARE.
 namespace architekton
 {
 #ifdef _WIN32
-constexpr char path_seperator = '\\';
+const char path_seperator = '\\';
 #else
 constexpr char path_seperator = '/';
 #endif

@@ -75,10 +75,10 @@ bool lexer::next_token(string& token,
 
   while(stream.get(c))
   {
-    debug_print(debug::lexer, "lexer::next_token::line number ", line_number, ", character: \'", output_form(c), "\', token so far: ", output_form(token), "\n");
+    debug_print(debug::lexer, "lexer::next_token::line number ", line_number, ", character: \'", output_form(c), "\', token so far: \'", output_form(token), "\'.");
     if(inside_quotes)
     {
-      debug_print(debug::lexer, "lexer::next_token::Inside quotes.\n");
+      debug_print(debug::lexer, "lexer::next_token::Inside quotes.");
       if('\\' == c)
       {
         if(stream.get(c))
@@ -104,13 +104,13 @@ bool lexer::next_token(string& token,
 
         if(contains(special_characters, c))
         { // special characters are tokens of their own
-          debug_print(debug::lexer, "lexer::next_token::Detected special character.\n");
+          debug_print(debug::lexer, "lexer::next_token::Detected special character.");
           token.append(1, c);
           return true;
         }
         else if('\"' == c)
         {
-          debug_print(debug::lexer, "lexer::next_token::Quote detected.\n");
+          debug_print(debug::lexer, "lexer::next_token::Quote detected.");
           inside_quotes = true;
           continue;
         }
@@ -118,7 +118,7 @@ bool lexer::next_token(string& token,
           continue;
         else if('#' == c)
         { // skip over comments
-          debug_print(debug::lexer, "lexer::next_token::Skipping over comments.\n");
+          debug_print(debug::lexer, "lexer::next_token::Skipping over comments.");
           string temp;
           std::getline(stream, temp);
           stream.putback('\n');
@@ -134,7 +134,7 @@ bool lexer::next_token(string& token,
       }
       else if(std::isspace(c, stream.getloc()) || contains(special_characters, c))
       { // special characters or whitespace seperate tokens
-        debug_print(debug::lexer, "lexer::next_token::Detected special character or space.\n");
+        debug_print(debug::lexer, "lexer::next_token::Detected special character or space.");
         stream.putback(c);
         break;
       }
@@ -145,7 +145,7 @@ bool lexer::next_token(string& token,
     }
   }
   if(!token.empty())
-    debug_print(debug::lexer, "lexer::next_token:Token extracted: \'", output_form(token), "\'\n");
+    debug_print(debug::lexer, "lexer::next_token:Token extracted: \'", output_form(token), "\'.");
 
   return !token.empty();
 }

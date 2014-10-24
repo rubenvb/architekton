@@ -85,7 +85,8 @@ bool file_exists(const std::string& name);
 
 // Find files in a directory with a pattern
 file_set find_files(const std::string& directory,
-                    const std::string& pattern = "");
+                    const std::string& pattern = "",
+                    bool prepend_directory = false);
 
 template<template<typename...> class Container, typename... Params>
 file_set find_files(const Container<Params...>& directories,
@@ -97,10 +98,10 @@ file_set find_files(const Container<Params...>& directories,
   {
     if(!directory_exists(directory))
     {
-      print("Skipping nonexistent directory: \'", directory, "\'.");
+      print("Skipping nonexistent directory: \'", directory, "\'\n.");
       continue;
     }
-    file_set some_files = find_files(directory, pattern);
+    file_set some_files = find_files(directory, pattern, true);
     for(auto&& file : some_files)
       all_files.insert(file);
   }

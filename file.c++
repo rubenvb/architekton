@@ -122,7 +122,8 @@ bool file_exists(const std::string& name)
 }
 
 file_set find_files(const std::string& directory,
-                    const std::string& pattern)
+                    const std::string& pattern,
+                    bool prepend_directory)
 {
   file_set files;
 #ifdef _WIN32
@@ -142,7 +143,10 @@ file_set find_files(const std::string& directory,
     if(!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
       debug_print(debug::utility, "Found file: \'", convert_to_utf8(data.cFileName), "\'.");
-      files.insert(file(convert_to_utf8(data.cFileName), data.ftLastWriteTime));
+      if(prepend_directory)
+        files.insert(file(directory / convert_to_utf8(data.cFileName), data.ftLastWriteTime));
+      else
+        files.insert(file(convert_to_utf8(data.cFileName), data.ftLastWriteTime));
     }
   } while(FindNextFileW(result, &data) != 0);
 #else
@@ -170,7 +174,10 @@ file_set find_files(const std::string& directory,
       if(fnmatch(filename.c_str(), entry_name.c_str(), FNM_PATHNAME) == 0)
       {
         debug_print(debug::utility, "Match found.");
-        files.insert(file(entry->d_name, attributes.st_mtime));
+        if(prepend_directory)
+          files.insert(file(directory / entry->d_name, attributes.st_mtime));
+        else
+          files.insert(file(entry->d_name, attributes.st_mtime));
       }
     }
   }
