@@ -25,6 +25,7 @@ public:
   bla(int i,
       char c);
 };
+
 bla::bla(int i,
          char c)
 : i(i),

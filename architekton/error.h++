@@ -44,10 +44,14 @@ class error
 public:
   error(std::string message,
         string_vector list = {})
-  : message(message), list(list) {}
+  : message(message),
+    list(list)
+  {}
   error(std::string message,
         const file_set& files);
-  virtual ~error();
+
+  virtual ~error()
+  {}
 
   virtual void print() const;
 
@@ -62,8 +66,11 @@ public:
   syntax_error(const std::string& message,
                const std::string& filename,
                const std::size_t line_number,
-               const string_vector& list = {})
-  : error(message, list), filename(filename), line_number(line_number) {}
+               string_vector list = {})
+  : error(message, list),
+    filename(filename),
+    line_number(line_number)
+  {}
 
   void print() const;
 
@@ -71,6 +78,11 @@ protected:
   const std::string filename;
   const std::size_t line_number;
 };
+
+#ifdef _WIN32
+//Returns the last Win32 error, in string format. Returns an empty string if there is no error.
+std::string win32_error_message();
+#endif
 
 } // namespace architekton
 

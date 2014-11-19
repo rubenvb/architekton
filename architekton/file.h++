@@ -83,7 +83,7 @@ std::unique_ptr<std::ostream> open_ofstream(const file& file);
 bool directory_exists(const std::string& name);
 bool file_exists(const std::string& name);
 
-// Find files in a directory with a pattern
+// Find files in a directory with a pattern (result can be empty)
 file_set find_files(const std::string& directory,
                     const std::string& pattern = "",
                     bool prepend_directory = false);

@@ -92,7 +92,7 @@ bool directory_exists(const std::string& name)
 #ifdef _WIN32
   DWORD attributes = GetFileAttributesW(convert_to_utf16(name).c_str());
   if(attributes == INVALID_FILE_ATTRIBUTES)
-    debug_print(debug::utility, "invalid file attributes returned, windows error:", GetLastError(), '.');
+    debug_print(debug::utility, "invalid file attributes returned, windows error: ", win32_error_message(), '.');
 
   return (attributes != INVALID_FILE_ATTRIBUTES
           && (attributes & FILE_ATTRIBUTE_DIRECTORY));
@@ -135,7 +135,7 @@ file_set find_files(const std::string& directory,
 
   HANDLE result = FindFirstFileW(filename.c_str(), &data);
   if(result == INVALID_HANDLE_VALUE)
-    throw error("Cannot find file: " + convert_to_utf8(filename));
+    return files;
 
   do
   {

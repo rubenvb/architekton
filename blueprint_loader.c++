@@ -53,7 +53,7 @@ blueprints load_blueprints(const options& options)
 
   auto blueprint_files = find_files(options.blueprint_directories, "*.blueprint.txt");
   if(blueprint_files.empty())
-    throw error("No blueprint files found.");
+    throw error("No blueprint files found. Looked in: ", options.blueprint_directories);
 
   for(const auto& blueprint_file : blueprint_files)
   {
@@ -81,13 +81,33 @@ void blueprint_parser::parse(blueprints& blueprints)
     {
       if(next_token(token))
       {
-        debug_print(debug::blueprint, "Found architecture: \'" + token + "\'.");
-
+        debug_print(debug::blueprint, "Found architecture: \'", token, "\'.");
+        blueprints.architectures.insert(token);
       }
       else
         throw syntax_error("\'architecture\' must be followed by an architecture name.", filename, line_number);
-
     }
+    else if(token == "os")
+    {
+      if(next_token(token))
+      {
+        debug_print(debug::blueprint, "Found os: \'", token, "\'.");
+        if(next_token(token) && token == "{")
+        {
+          if(next_token(token))
+          {
+            if(token == "prefers" && next_token(token))
+            {
+              debug_print(debug::blueprint, "Preferred toolchain found: \'", token, "\'.");
+            }
+          }
+        }
+      }
+      else
+        continue;
+    }
+    else
+      throw syntax_error("Unexpected token: " + token, filename, line_number);
   }
 }
 

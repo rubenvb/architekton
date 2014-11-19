@@ -1,5 +1,5 @@
 #
-# architectures blueprint file
+# GCC blueprint file
 #
 ###############################
 #
@@ -31,5 +31,3 @@ architecture x86
 architecture AMD64
 
 architecture ARM
-
-architecture ARM64

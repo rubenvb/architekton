@@ -40,9 +40,6 @@ THE SOFTWARE.
 namespace architekton
 {
 
-error::~error()
-{}
-
 error::error(std::string message,
              const file_set& files)
 : message(message),
@@ -58,12 +55,12 @@ error::error(std::string message,
 void error::print() const
 {
   wcerr << "Error:\n"
-           "\t" << message.c_str() << "\n";
+           "  " << message.c_str() << "\n";
   if(!list.empty())
     {
       for(auto&& item : list)
       {
-        wcerr << "\t" << item.c_str() << "\n";
+        wcerr << "    " << item.c_str() << "\n";
       }
     }
 }
@@ -71,8 +68,28 @@ void error::print() const
 void syntax_error::print() const
 {
    std::cerr << "Error in: " << filename << "\n"
-   << "line: " << std::to_string(line_number) << "\n";
+             << "line: " << std::to_string(line_number) << "\n";
    error::print();
 }
+
+#ifdef _WIN32
+std::string win32_error_message()
+{
+  DWORD error = ::GetLastError();
+  if(error == 0)
+    return "No error message has been recorded";
+
+  //LPWSTR buffer = nullptr;
+  std::unique_ptr<char, decltype(&LocalFree)> buffer(nullptr, &LocalFree);
+  size_t size = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                               NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&buffer, 0, NULL);
+
+  std::wstring message((wchar_t*)buffer.get(), size);
+
+  //LocalFree(buffer);
+
+  return convert_to_utf8(message);
+}
+#endif
 
 } // namespace architekton

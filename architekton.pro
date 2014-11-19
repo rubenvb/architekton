@@ -35,8 +35,8 @@ OTHER_FILES += Codestyle.txt \
     architekton.architekton.txt \
     CMakeLists.txt \
     blueprints/architectures.blueprint.txt \
-    blueprints/toolchains.blueprint.txt \
-    blueprints/OSes.blueprint.txt
+    blueprints/OSes.blueprint.txt \
+    blueprints/toolchains.blueprint.txt
 
 # mess to work with *.c++ extension
 QMAKE_EXT_CPP = .c++
