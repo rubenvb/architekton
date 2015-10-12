@@ -36,9 +36,9 @@ namespace architekton
 {
 struct version
 {
-  const static std::uint8_t major = 0;
-  const static std::uint8_t minor = 0;
-  const static std::uint8_t bugfix = 0;
+  const static std::uint16_t major = 0;
+  const static std::uint16_t minor = 0;
+  const static std::uint16_t bugfix = 0;
 };
 
 } // namespace architekton

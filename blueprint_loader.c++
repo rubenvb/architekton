@@ -96,7 +96,16 @@ void blueprint_parser::parse(blueprints& blueprints)
         {
           if(next_token(token))
           {
-            if(token == "prefers" && next_token(token))
+            if(token == "provides")
+            {
+               if(next_token(token))
+               {
+                 debug_print(debug::blueprint, "Blueprint provides \'", token, "\'.");
+
+
+               }
+            }
+            else if(token == "prefers" && next_token(token))
             {
               debug_print(debug::blueprint, "Preferred toolchain found: \'", token, "\'.");
             }
